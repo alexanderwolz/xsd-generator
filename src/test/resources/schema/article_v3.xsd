@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="qualified"
            elementFormDefault="qualified"
-           targetNamespace="http://www.alexanderwolz.de/test/articles"
-           xmlns:authors="http://www.alexanderwolz.de/test/authors"
-           xmlns:roles="http://www.alexanderwolz.de/test/roles"
-           xmlns:articles="http://www.alexanderwolz.de/test/articles"
+           targetNamespace="http://www.alexanderwolz.de/schema/articles"
+           xmlns:authors="http://www.alexanderwolz.de/schema/authors"
+           xmlns:roles="http://www.alexanderwolz.de/schema/roles"
+           xmlns:articles="http://www.alexanderwolz.de/schema/articles"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:include schemaLocation="status_v1.xsd"/>
-    <xs:import namespace="http://www.alexanderwolz.de/test/authors" schemaLocation="author_v2.xsd"/>
-    <xs:import namespace="http://www.alexanderwolz.de/test/roles" schemaLocation="role_v6.xsd"/>
+    <xs:import namespace="http://www.alexanderwolz.de/schema/authors" schemaLocation="author_v2.xsd"/>
+    <xs:import namespace="http://www.alexanderwolz.de/schema/roles" schemaLocation="role_v6.xsd"/>
     <xs:complexType name="article">
         <xs:annotation>
             <xs:documentation>
@@ -16,7 +16,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="1" name="id" type="xs:string"/>
+            <xs:element name="id" type="xs:string"/>
             <xs:element maxOccurs="unbounded" minOccurs="0" ref="authors:author"/>
             <xs:element name="requiredRole" type="roles:role"/>
             <xs:element name="publicationStatus" type="articles:status"/>

@@ -16,13 +16,29 @@ class XsdJavaGenerator(val outputDir: File) {
         catalog: File?,
         createEpisode: Boolean,
         packageName: String?
+    ) = generate(listOf(schema), bindings, episodes, catalog, createEpisode, packageName)
+
+
+    fun generate(
+        schemas: Collection<File>,
+        bindings: Collection<File>,
+        episodes: Collection<File>,
+        catalog: File?,
+        createEpisode: Boolean,
+        packageName: String?
     ): Boolean {
 
-        if (!schema.exists()) {
-            throw NoSuchElementException("Schema ${schema.absolutePath} does not exist")
+        logger.info("Parsing schemas: ${schemas.joinToString { it.name }}")
+
+        if (schemas.isEmpty()) {
+            throw NoSuchElementException("Schemas must be not be empty")
         }
 
-        logger.info("Parsing schema: ${schema.name}")
+        schemas.forEach {
+            if (!it.exists()) {
+                throw NoSuchElementException("Schema ${it.absolutePath} does not exist")
+            }
+        }
 
         if (!outputDir.exists()) {
             outputDir.mkdirs()
@@ -53,6 +69,7 @@ class XsdJavaGenerator(val outputDir: File) {
 
         if (createEpisode) {
             //Info: JXC writes only one episode file per run
+            val schema = schemas.first()
             val episode = File(outputDir, "${schema.nameWithoutExtension}.episode")
             args.add("-episode", episode.absolutePath)
         }
@@ -60,11 +77,13 @@ class XsdJavaGenerator(val outputDir: File) {
         catalog?.let {
             if (it.exists()) {
                 args.add("-catalog", it.absolutePath)
-            }else throw NoSuchElementException("Catalog $it does not exist")
+            } else throw NoSuchElementException("Catalog $it does not exist")
         }
 
         //last arguments are the schema files
-        args.add(schema.absolutePath)
+        schemas.forEach {
+            args.add(it.absolutePath)
+        }
 
         logger.info("Executing args: ${args.getArgs().joinToString(separator = " ")}")
 

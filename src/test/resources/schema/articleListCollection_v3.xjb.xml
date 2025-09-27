@@ -1,0 +1,26 @@
+<jaxb:bindings
+        xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        jaxb:version="3.0">
+
+    <jaxb:bindings schemaLocation="articleListCollection_v3.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.alexanderwolz.model.article.v3"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="author_v2.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.alexanderwolz.model.author.v2"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="role_v6.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.alexanderwolz.model.role.v6"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>
+
+

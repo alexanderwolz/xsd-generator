@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="qualified"
-           elementFormDefault="qualified"
-           targetNamespace="http://www.alexanderwolz.de/test/complex"
-           xmlns:cx="http://www.alexanderwolz.de/test/complex"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:include schemaLocation="complexChild_v6.xsd"/>
-    <xs:element name="complex" type="cx:complex"/>
-</xs:schema>

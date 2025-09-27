@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="qualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://www.alexanderwolz.de/schema/articles"
+           xmlns:articles="http://www.alexanderwolz.de/schema/articles"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="article_v3.xsd"/>
+    <xs:complexType name="articleListCollection">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="articles" type="articles:articleList"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="articleListCollection" type="articles:articleListCollection"/>
+</xs:schema>
