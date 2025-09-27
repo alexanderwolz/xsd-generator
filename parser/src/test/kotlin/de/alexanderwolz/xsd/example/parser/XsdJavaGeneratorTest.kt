@@ -1,14 +1,15 @@
-package de.alexanderwolz.xsd.parser
+package de.alexanderwolz.xsd.example.parser
 
+import de.alexanderwolz.xsd.parser.XsdJavaGenerator
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
-import kotlin.test.assertTrue
 
 class XsdJavaGeneratorTest {
 
-    private val schemaDir = File("src/test/resources/schema")
+    private val schemaDir = File("../schemas")
     private val outputDir = File("build/generated/sources/xjc/main/java")
     private val generator = XsdJavaGenerator(outputDir)
 

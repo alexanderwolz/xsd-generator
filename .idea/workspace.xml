@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2af31f93-ef7f-4afb-b94f-19b113098ab7" name="Changes" comment="Added new test cases">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/de/alexanderwolz/xsd/parser/XsdJavaGenerator.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/de/alexanderwolz/xsd/parser/XsdJavaGeneratorTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/articleListCollection_v3.xjb.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/articleListCollection_v3.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/article_v3.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/author_v2.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/complexChild_v6.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/complexParent_v6.xjb.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/complexParent_v6.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/order_v1.xjb.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/order_v1.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/role_v6.xsd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/schema/status_v1.xsd" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="xsd-parser" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="xsd-parser" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="xsd-parser" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.14-bin/38aieal9i53h9rfe7vjup95b9/gradle-8.14" javaHome="$USER_HOME$/Library/Java/JavaVirtualMachines/openjdk-22.0.1/Contents/Home" gradleVersion="8.14" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="33H8iLtZC731FkYx5C8B47K4Na4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build xsd-parser.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerate.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplex.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithBinding.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithBinding2.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithBindingAndDependencyBinding.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithDependenciesAndBindingsAndCustomPackageName.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithDependency.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithDependencyBindingFails.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithDependencyBindings.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithEpisodes.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexWithNonExistingEpisodesFails.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexXSDs.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexXSDs1.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateComplexXSDs2.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateNested.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateNestedWithBinding.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateNestedWithBindingAndEpisodeCreation.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimple.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleCustomPackageName.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleCustomPackageNameAndEpisodeCreation.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleEpisodeCreation.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleWithBindingAndEpisodeCreation.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleXSD.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateSimpleXsd.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.testGenerateXSD.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [generateJaxb].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [generateXsdJava].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser:example [:example:de.alexanderwolz.xsd.Application.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/alexander/workspace/alexanderwolz/public/xsd-parser/example/libs&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/example/libs" />
+      <recent name="$PROJECT_DIR$/schemas/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/test/resources/schema/simple" />
+      <recent name="$PROJECT_DIR$/src/test/resources/schema" />
+      <recent name="$PROJECT_DIR$/src/test/resources/schema/binding" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/example" />
+      <recent name="$PROJECT_DIR$/example/src/main" />
+      <recent name="$PROJECT_DIR$/parser/src/main/kotlin/de/alexanderwolz/xsd" />
+      <recent name="$PROJECT_DIR$/parser/src/main/kotlin/de/alexanderwolz/xsd/parser" />
+      <recent name="$PROJECT_DIR$/parser/src/test/resources" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="de.alexanderwolz.xsd" />
+    </key>
+    <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="de.alexanderwolz.xsd.parser" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.xsd-parser [build]">
+    <configuration name="XsdJavaGeneratorTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":parser:test" />
+            <option value="--tests" />
+            <option value="&quot;de.alexanderwolz.xsd.example.parser.XsdJavaGeneratorTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="XsdJavaGeneratorTest.testGenerateComplexWithEpisodes" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":parser:test" />
+            <option value="--tests" />
+            <option value="&quot;de.alexanderwolz.xsd.example.parser.XsdJavaGeneratorTest.testGenerateComplexWithEpisodes&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="xsd-parser [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="xsd-parser [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Application" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="de.alexanderwolz.xsd.example.Application" />
+      <module name="xsd-parser.example.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="xsd" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="xsd" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.xsd-parser [build]" />
+        <item itemvalue="Gradle.xsd-parser [clean]" />
+        <item itemvalue="Gradle.XsdJavaGeneratorTest.testGenerateComplexWithEpisodes" />
+        <item itemvalue="Gradle.XsdJavaGeneratorTest" />
+        <item itemvalue="Kotlin.Application" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2af31f93-ef7f-4afb-b94f-19b113098ab7" name="Changes" comment="" />
+      <created>1758962765502</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1758962765502</updated>
+    </task>
+    <task id="LOCAL-00001" summary="First breakthrough with generating java from XSD using XJC">
+      <option name="closed" value="true" />
+      <created>1758976297091</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1758976297091</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added new test cases">
+      <option name="closed" value="true" />
+      <created>1758980905771</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1758980905771</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added new test cases">
+      <option name="closed" value="true" />
+      <created>1758981019524</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1758981019524</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First breakthrough with generating java from XSD using XJC" />
+    <MESSAGE value="Added new test cases" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added new test cases" />
+  </component>
+</project>
