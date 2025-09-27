@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="qualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://www.alexanderwolz.de/test/articles"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="status">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="published"/>
+            <xs:enumeration value="draft"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
