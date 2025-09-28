@@ -35,8 +35,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("$defaultPackage/Order.java"))
     }
 
@@ -47,9 +48,10 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = "com.test.xjc.generated"
         val packageFolder = packageName.replace(".", "/")
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("$packageFolder/Order.java"))
     }
 
@@ -60,8 +62,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("$defaultPackage/Order.java"))
         testIfExists(outputDir, listOf("order_v1.episode"))
     }
@@ -73,9 +76,10 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
+        val flags = null
         val packageName = "com.test.xjc.generated"
         val packageFolder = packageName.replace(".", "/")
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("$packageFolder/Order.java"))
         testIfExists(outputDir, listOf("order_v1.episode"))
         assertTrue {
@@ -91,8 +95,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("de/alexanderwolz/generated/v1/Order.java"))
     }
 
@@ -103,8 +108,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("de/alexanderwolz/generated/v1/Order.java"))
         testIfExists(outputDir, listOf("order_v1.episode"))
         assertTrue {
@@ -120,8 +126,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         //it should use the definition from target namespace, e.g. de.alexanderwolz.schema
         testIfExists(
             outputDir, listOf(
@@ -143,8 +150,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/article/v3/Article.java",
@@ -165,8 +173,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/article/v3/Article.java",
@@ -199,8 +208,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         //It generates all classes using the schemas defined in the XSDs
         testIfExists(
             outputDir, listOf(
@@ -222,8 +232,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         //it only generates the package from the dedicated xsd binding, it takes the rest from the namespace
         testIfExists(
             outputDir, listOf(
@@ -248,10 +259,11 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
         assertThrows<Exception> {
             //It must fail here, as the schema file from the 2nd binding is not specified
-            generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+            generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         }
     }
 
@@ -265,8 +277,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schemas, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
         //It uses all package names from both bindings
         testIfExists(
             outputDir, listOf(
@@ -291,8 +304,9 @@ class XsdJavaGeneratorTest {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = "com.domain"
-        generator.generate(schemas, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags,packageName)
         //It uses all package names from both bindings
         testIfExists(
             outputDir, listOf(
@@ -314,10 +328,11 @@ class XsdJavaGeneratorTest {
         val episodes = listOf(File(outputDir, "articleListCollection_v3.episode"))
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
         assertThrows<NoSuchElementException> {
             //It must fail here, as the episode does not exist
-            generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+            generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         }
     }
 
@@ -332,8 +347,9 @@ class XsdJavaGeneratorTest {
         val episodes = listOf(File(outputDir, "articleListCollection_v3.episode"))
         val catalog = null
         val createEpisode = false
+        val flags = null
         val packageName = null
-        generator.generate(schema, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
         //It should only create the complex class here
     }
 
