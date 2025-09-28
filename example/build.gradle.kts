@@ -1,5 +1,6 @@
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
+import java.nio.charset.Charset
 
 buildscript {
     dependencies {
@@ -57,7 +58,7 @@ tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir)
+        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -74,12 +75,17 @@ tasks.register("generateJaxbWithDependencies") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir)
-        generator.generateWithDependencies(
-            schemaFolder,
-            "complexParent_v6.xsd",
-            listOf("articleListCollection_v3.xsd")
-        )
+        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
+        val schemas = listOf(File(schemaFolder, "complexParent_v6.xsd"))
+        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }
+        val depSchema = File(schemaFolder, "articleListCollection_v3.xsd")
+        val depBindings = listOf(File(depSchema.parent, "${depSchema.nameWithoutExtension}.xjb.xml"))
+        val dependencies = mapOf(depSchema to depBindings)
+        val catalog = null
+        val createEpisode = false
+        val flags = XsdJavaGenerator.Flags.values().toList()
+        val packageName = null
+        generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
     }
 }
 

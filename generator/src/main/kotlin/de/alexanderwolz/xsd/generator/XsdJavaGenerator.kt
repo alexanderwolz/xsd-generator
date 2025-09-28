@@ -2,64 +2,40 @@ package de.alexanderwolz.xsd.generator
 
 import com.sun.tools.xjc.Driver
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.nio.charset.Charset
 import kotlin.text.split
 
-class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8) {
+class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8, logger: Logger? = null) {
 
-    private val logger = LoggerFactory.getLogger(javaClass)
+    private val logger = logger ?: LoggerFactory.getLogger(javaClass)
 
-    fun generateWithDependencies(
-        schemaDir: File,
-        schema: String,
-        dependencies: Collection<String>,
+    fun generate(
+        schemas: List<File>,
+        bindings: List<File>,
+        dependencies: Map<File, Collection<File>>,
         catalog: File? = null,
         createEpisode: Boolean = false,
-        flags: Collection<Flags>? = null,
+        flags: List<Flags>? = null,
         packageName: String? = null
     ): Boolean {
-        val schemaFiles = listOf(File(schemaDir, schema))
-        val dependencyFiles = dependencies.map { File(schemaDir, it) }
-        return generateWithDependencies(schemaFiles, dependencyFiles, catalog, createEpisode, flags, packageName)
-    }
+        logger.info("Generating schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.keys.joinToString { it.name }})")
 
-    fun generateWithDependencies(
-        schemas: Collection<File>,
-        dependencies: Collection<File>,
-        catalog: File? = null,
-        createEpisode: Boolean = false,
-        flags: Collection<Flags>? = null,
-        packageName: String? = null
-    ): Boolean {
-        logger.info("Generating for schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.joinToString { it.name }})")
         val episodes = ArrayList<File>()
-        dependencies.forEach { dependency ->
+        dependencies.forEach { entry ->
+            val dependency = entry.key
+            val dependencyBindings = entry.value
             val episode = File(outputDir, "${dependency.nameWithoutExtension}.episode")
             if (!episode.exists()) {
                 logger.info("Episode for dependency ${dependency.name} does not exist, starting generation..")
-                generateWithEpisode(dependency)
+                generate(listOf(dependency), dependencyBindings, emptyList(), catalog, true, flags, packageName)
             }
             episodes.add(episode)
         }
-        val bindings = getDefaultBindings(schemas)
+
         return generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
-    }
-
-    fun generateWithEpisode(
-        schema: File,
-        catalog: File? = null,
-        flags: Collection<Flags>? = null,
-        packageName: String? = null
-    ) {
-        val schemas = listOf(schema)
-        val bindings = getDefaultBindings(schemas)
-        generate(schemas, bindings, emptyList(), catalog, true, flags, packageName)
-    }
-
-    private fun getDefaultBindings(schemas: Collection<File>): List<File> {
-        return schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
     }
 
     fun generate(

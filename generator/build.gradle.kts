@@ -30,5 +30,5 @@ tasks.jar {
 }
 
 kotlin {
-    jvmToolchain(22)
+    jvmToolchain(11) //support older projects
 }
