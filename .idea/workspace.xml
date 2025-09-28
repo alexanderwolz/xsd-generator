@@ -4,7 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cf7ced49-6699-4c65-a890-1e09c03281c6" name="Changes" comment="" />
+    <list default="true" id="cf7ced49-6699-4c65-a890-1e09c03281c6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/libs/generator-1.0.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/libs/parser-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/generator/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser/src/main/kotlin/de/alexanderwolz/xsd/parser/XsdJavaGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/generator/src/main/kotlin/de/alexanderwolz/xsd/generator/XsdJavaGenerator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser/src/main/kotlin/de/alexanderwolz/xsd/parser/task/XsdJavaGeneratorTask.kt" beforeDir="false" afterPath="$PROJECT_DIR$/generator/src/main/kotlin/de/alexanderwolz/xsd/generator/task/XsdJavaGeneratorTask.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser/src/test/kotlin/de/alexanderwolz/xsd/example/parser/XsdJavaGeneratorTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/generator/src/test/kotlin/de/alexanderwolz/xsd/example/parser/XsdJavaGeneratorTest.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle.kts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,6 +35,9 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/generator">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -31,11 +48,18 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="xsd-parser" type="f1a62948:ProjectNode" />
+                <item name="generator" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="xsd-parser" type="f1a62948:ProjectNode" />
+                <item name="generator" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="xsd-parser" type="f1a62948:ProjectNode" />
+                <item name="generator" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
@@ -50,9 +74,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.14-bin/38aieal9i53h9rfe7vjup95b9/gradle-8.14" javaHome="$USER_HOME$/Library/Java/JavaVirtualMachines/openjdk-22.0.1/Contents/Home" gradleVersion="8.14" />
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="33IIu6BxLzVkUqJMeKM5apzXqMF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -60,84 +84,24 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.Build xsd-parser.executor": "Run",
     "Gradle.xsd-parser [build].executor": "Run",
     "Gradle.xsd-parser [clean].executor": "Run",
     "Gradle.xsd-parser:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor": "Run",
+    "Gradle.xsd-parser:generator [build].executor": "Run",
+    "Gradle.xsd-parser:generator [clean].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true"
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/alexander/workspace/alexanderwolz/public/xsd-generator"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.xsd-parser [build]">
-    <configuration name="xsd-parser [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="xsd-parser [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="Application" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="de.alexanderwolz.xsd.example.Application" />
-      <module name="xsd-parser.example.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Gradle.xsd-parser [build]" />
-        <item itemvalue="Gradle.xsd-parser [clean]" />
-        <item itemvalue="Kotlin.Application" />
-      </list>
-    </recent_temporary>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/example/libs" />
+    </key>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

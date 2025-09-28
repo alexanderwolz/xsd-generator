@@ -1,6 +1,6 @@
 package de.alexanderwolz.xsd.example.parser
 
-import de.alexanderwolz.xsd.parser.XsdJavaGenerator
+import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
