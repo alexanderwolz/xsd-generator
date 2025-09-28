@@ -5,7 +5,6 @@ buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
         classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-v*.jar"))))
-        classpath("org.slf4j:slf4j-simple:2.0.17")
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
         classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
@@ -55,7 +54,7 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
     episodes = emptyList()
     catalog = null
-    createEpisode = true
+    createEpisode = false
     flags = XsdJavaGenerator.Flags.values().toList()
     packageName = null
 }
@@ -63,8 +62,6 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
 tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
-
-    // Input/Output für Gradle Caching
     inputs.dir(xjcSchemaFolder)
     outputs.dir(xjcGenDir)
 
@@ -77,9 +74,7 @@ tasks.register("generateJaxbAlternative") {
         val createEpisode = false
         val flags = XsdJavaGenerator.Flags.values().toList()
         val packageName = null
-        logger.info("Generating from ${schemas.size} schema(s)")
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
-        logger.info("Successfully generated Java classes")
     }
 }
 
