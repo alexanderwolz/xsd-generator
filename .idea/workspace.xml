@@ -7,8 +7,8 @@
     <list default="true" id="cf7ced49-6699-4c65-a890-1e09c03281c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/example/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/libs/generator-1.0.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/example/libs/generator-1.0.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generator/src/main/kotlin/de/alexanderwolz/xsd/generator/XsdJavaGenerator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/generator/src/main/kotlin/de/alexanderwolz/xsd/generator/XsdJavaGenerator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/libs/generator-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generator/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/generator/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,58 +66,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build xsd-generator.executor": "Run",
-    "Gradle.Build xsd-parser.executor": "Run",
-    "Gradle.XsdJavaGeneratorTest.executor": "Run",
-    "Gradle.xsd-generator [build].executor": "Run",
-    "Gradle.xsd-generator [clean].executor": "Run",
-    "Gradle.xsd-generator [generateJaxb].executor": "Run",
-    "Gradle.xsd-generator:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor": "Run",
-    "Gradle.xsd-parser [build].executor": "Run",
-    "Gradle.xsd-parser [clean].executor": "Run",
-    "Gradle.xsd-parser:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor": "Run",
-    "Gradle.xsd-parser:generator [build].executor": "Run",
-    "Gradle.xsd-parser:generator [clean].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/alexander/workspace/alexanderwolz/public/xsd-generator/example/libs"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build xsd-generator.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build xsd-parser.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.XsdJavaGeneratorTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-generator [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-generator [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-generator [generateJaxb].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-generator:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser:example [:example:de.alexanderwolz.xsd.example.Application.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser:generator [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.xsd-parser:generator [clean].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/alexander/workspace/alexanderwolz/public/xsd-generator/example/libs&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/example/libs" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.xsd-generator [clean]">
-    <configuration name="XsdJavaGeneratorTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":generator:test" />
-            <option value="--tests" />
-            <option value="&quot;de.alexanderwolz.xsd.example.parser.XsdJavaGeneratorTest&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Kotlin.Application">
     <configuration name="xsd-generator [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -162,28 +138,6 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="xsd-generator [generateJaxb]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="generateJaxb" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="Application" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="de.alexanderwolz.xsd.example.Application" />
       <module name="xsd-generator.example.main" />
@@ -191,12 +145,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Gradle.xsd-generator [build]" />
+      <item itemvalue="Gradle.xsd-generator [clean]" />
+      <item itemvalue="Kotlin.Application" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.xsd-generator [clean]" />
-        <item itemvalue="Gradle.xsd-generator [generateJaxb]" />
         <item itemvalue="Gradle.xsd-generator [build]" />
-        <item itemvalue="Gradle.XsdJavaGeneratorTest" />
         <item itemvalue="Kotlin.Application" />
       </list>
     </recent_temporary>

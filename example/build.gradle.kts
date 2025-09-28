@@ -4,7 +4,7 @@ import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
-        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("generator-*.jar"))))
+        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-v*.jar"))))
         classpath("org.slf4j:slf4j-simple:2.0.17")
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
