@@ -23,10 +23,6 @@ repositories {
     mavenCentral()
 }
 
-val xjc: Configuration by configurations.creating
-val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java")
-val xjcSchemaFolder = "../schemas"
-
 dependencies {
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
@@ -35,23 +31,19 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+val xjcGenDir = fileTree("build/generated/sources/xjc/main/java").dir
+val schemaFolder = fileTree("../schemas").dir
+
 sourceSets {
     named("main") {
         java.srcDir(xjcGenDir)
     }
 }
 
-tasks.named("compileJava") {
-    dependsOn("generateJaxb")
-}
-tasks.named("compileKotlin") {
-    dependsOn("generateJaxb")
-}
-
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
-    outputDir = xjcGenDir.get().asFile
-    schemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
+    outputDir = xjcGenDir
+    schemas = fileTree(schemaFolder) { include("*.xsd") }.files
     bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
     episodes = emptyList()
     catalog = null
@@ -65,8 +57,8 @@ tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir.get().asFile)
-        val schemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
+        val generator = XsdJavaGenerator(xjcGenDir)
+        val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
         val catalog = null
@@ -75,6 +67,27 @@ tasks.register("generateJaxbAlternative") {
         val packageName = null
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
+}
+
+//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
+tasks.register("generateJaxbWithDependencies") {
+    group = "generation"
+    description = "Generates Java classes from XSD schemas"
+    doLast {
+        val generator = XsdJavaGenerator(xjcGenDir)
+        generator.generateWithDependencies(
+            schemaFolder,
+            "complexParent_v6.xsd",
+            listOf("articleListCollection_v3.xsd")
+        )
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("generateJaxb")
+}
+tasks.named("compileKotlin") {
+    dependsOn("generateJaxb")
 }
 
 tasks.test {

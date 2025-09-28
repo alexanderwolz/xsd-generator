@@ -11,16 +11,56 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun generate(
-        schema: File,
-        bindings: Collection<File>,
-        episodes: Collection<File>,
-        catalog: File?,
-        createEpisode: Boolean,
-        flags: Collection<Flags>?,
-        packageName: String?
-    ) = generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
+    fun generateWithDependencies(
+        schemaDir: File,
+        schema: String,
+        dependencies: Collection<String>,
+        catalog: File? = null,
+        createEpisode: Boolean = false,
+        flags: Collection<Flags>? = null,
+        packageName: String? = null
+    ): Boolean {
+        val schemaFiles = listOf(File(schemaDir, schema))
+        val dependencyFiles = dependencies.map { File(schemaDir, it) }
+        return generateWithDependencies(schemaFiles, dependencyFiles, catalog, createEpisode, flags, packageName)
+    }
 
+    fun generateWithDependencies(
+        schemas: Collection<File>,
+        dependencies: Collection<File>,
+        catalog: File? = null,
+        createEpisode: Boolean = false,
+        flags: Collection<Flags>? = null,
+        packageName: String? = null
+    ): Boolean {
+        logger.info("Generating for schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.joinToString { it.name }})")
+        val episodes = ArrayList<File>()
+        dependencies.forEach { dependency ->
+            val episode = File(outputDir, "${dependency.nameWithoutExtension}.episode")
+            if (!episode.exists()) {
+                logger.info("Episode for dependency ${dependency.name} does not exist, starting generation..")
+                generateWithEpisode(dependency)
+            }
+            episodes.add(episode)
+        }
+        val bindings = getDefaultBindings(schemas)
+        return generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
+    }
+
+    fun generateWithEpisode(
+        schema: File,
+        catalog: File? = null,
+        flags: Collection<Flags>? = null,
+        packageName: String? = null
+    ) {
+        val schemas = listOf(schema)
+        val bindings = getDefaultBindings(schemas)
+        generate(schemas, bindings, emptyList(), catalog, true, flags, packageName)
+    }
+
+    private fun getDefaultBindings(schemas: Collection<File>): List<File> {
+        return schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
+    }
 
     fun generate(
         schemas: Collection<File>,
@@ -32,7 +72,9 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         packageName: String?
     ): Boolean {
 
-        logger.info("Parsing schemas: ${schemas.joinToString { it.name }}")
+        if (logger.isInfoEnabled) {
+            logger.info("Parsing schemas: ${schemas.joinToString { it.name }}")
+        }
 
         if (schemas.isEmpty()) {
             throw NoSuchElementException("Schemas must be not be empty")
@@ -61,12 +103,18 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         }
 
         bindings.forEach { binding ->
+            if (logger.isDebugEnabled) {
+                logger.debug("Using binding: ${binding.absolutePath}")
+            }
             if (binding.exists()) {
                 args.add("-b", binding.absolutePath)
             } else throw NoSuchElementException("Binding $binding does not exist")
         }
 
         episodes.forEach { episode ->
+            if (logger.isDebugEnabled) {
+                logger.debug("Using episode: ${episode.absolutePath}")
+            }
             if (episode.exists()) {
                 //Info: we have to bind episode like bindings
                 args.add("-b", episode.absolutePath)
@@ -91,8 +139,9 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             args.add(it.absolutePath)
         }
 
-        logger.info("Executing args: ${args.getArgs().joinToString(separator = " ")}")
-
+        if (logger.isDebugEnabled) {
+            logger.debug("Executing args: ${args.getArgs().joinToString(separator = " ")}")
+        }
 
         val statusStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
@@ -116,7 +165,9 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             throw XsdCompileException(exitCode, errors)
         }
 
-        logger.info("XJC generation successful.")
+        if (logger.isInfoEnabled) {
+            logger.info("XJC generation successful.")
+        }
         return true
     }
 
