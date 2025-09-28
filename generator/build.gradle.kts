@@ -22,9 +22,13 @@ dependencies {
     testImplementation("org.jvnet.jaxb:jaxb-plugins:4.0.11")
 }
 
-
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    archiveBaseName.set("xsd-${project.name}")
+    archiveVersion.set("v${project.version}")
 }
 
 kotlin {
