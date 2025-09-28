@@ -2,7 +2,10 @@ package de.alexanderwolz.xsd.example.parser
 
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -11,7 +14,8 @@ import java.io.File
 class XsdJavaGeneratorTest {
 
     private val schemaDir = File("../schemas")
-    private val outputDir = File("build/generated/sources/xjc/main/java")
+    private val outputParent = File("build/generated")
+    private val outputDir = File(outputParent, "/sources/xjc/main/java")
     private val generator = XsdJavaGenerator(outputDir)
 
     private val defaultPackage = "generated"
@@ -19,6 +23,11 @@ class XsdJavaGeneratorTest {
     @BeforeEach
     fun before() {
         outputDir.deleteRecursively()
+    }
+
+    @AfterEach
+    fun after() {
+        outputParent.deleteRecursively()
     }
 
     private fun testIfExists(parent: File, fileNames: Collection<String>) {
@@ -354,25 +363,17 @@ class XsdJavaGeneratorTest {
     }
 
     @Test
-    fun testGenerateDependencies() {
+    fun testGenerateWithDependencies() {
         val schemas = listOf(File(schemaDir, "complexParent_v6.xsd"))
-        val dependencies = listOf(File(schemaDir, "articleListCollection_v3.xsd"))
+        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
+        val dependencySchema = File(schemaDir, "articleListCollection_v3.xsd")
+        val dependencyBinding = File(dependencySchema.parent, "${dependencySchema.nameWithoutExtension}.xjb.xml")
+        val dependencies = mapOf(dependencySchema to listOf(dependencyBinding))
         val catalog = null
         val createEpisode = false
         val flags = null
         val packageName = null
-        generator.generateWithDependencies(schemas, dependencies, catalog, createEpisode, flags, packageName)
-    }
-
-    @Test
-    fun testGenerateDependenciesStrings() {
-        val schema = "complexParent_v6.xsd"
-        val dependencies = listOf("articleListCollection_v3.xsd")
-        val catalog = null
-        val createEpisode = false
-        val flags = null
-        val packageName = null
-        generator.generateWithDependencies(schemaDir, schema, dependencies, catalog, createEpisode, flags, packageName)
+        generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
     }
 
 

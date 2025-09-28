@@ -5,7 +5,7 @@ plugins {
 allprojects {
 
     group = "de.alexanderwolz.xsd"
-    version = "1.0.0" //should fit git tag for release
+    version = "1.0.0"
 
     repositories {
         mavenCentral()
