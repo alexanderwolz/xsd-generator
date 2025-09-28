@@ -5,10 +5,11 @@ buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
         classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("generator-*.jar"))))
+        classpath("org.slf4j:slf4j-simple:2.0.17")
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
         classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
-        classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11")
+        classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     }
 }
 
@@ -31,6 +32,7 @@ dependencies {
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     implementation("org.jvnet.jaxb:jaxb-plugins:4.0.11")
+    implementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
     testImplementation(kotlin("test"))
 }
 
@@ -54,6 +56,7 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     episodes = emptyList()
     catalog = null
     createEpisode = true
+    flags = XsdJavaGenerator.Flags.values().toList()
     packageName = null
 }
 
@@ -67,11 +70,15 @@ tasks.register("generateJaxbAlternative") {
 
     doLast {
         val generator = XsdJavaGenerator(xjcGenDir.get().asFile)
-        val allSchemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
-        val allBindings = allSchemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
-
-        logger.info("Generating from ${allSchemas.size} schema(s)")
-        generator.generate(allSchemas, allBindings, emptyList(), null, false, null,null)
+        val schemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
+        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
+        val episodes = emptyList<File>()
+        val catalog = null
+        val createEpisode = false
+        val flags = XsdJavaGenerator.Flags.values().toList()
+        val packageName = null
+        logger.info("Generating from ${schemas.size} schema(s)")
+        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
         logger.info("Successfully generated Java classes")
     }
 }

@@ -3,8 +3,9 @@ package de.alexanderwolz.xsd.generator
 import com.sun.tools.xjc.Driver
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.nio.charset.Charset
 
-class XsdJavaGenerator(val outputDir: File) {
+class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -47,7 +48,7 @@ class XsdJavaGenerator(val outputDir: File) {
 
         val args = Arguments()
         args.add("-d", outputDir.absolutePath)
-        args.add("-encoding", "UTF-8")
+        args.add("-encoding", encoding.name())
 
         (flags ?: Flags.DEFAULTS).forEach {
             args.add(it.value, null)
@@ -113,8 +114,7 @@ class XsdJavaGenerator(val outputDir: File) {
         companion object {
             val DEFAULTS = listOf(
                 EXTENSION,
-                AUTO_NAME_RESOLUTION,
-                MARK_GENERATED
+                AUTO_NAME_RESOLUTION
             )
         }
     }
