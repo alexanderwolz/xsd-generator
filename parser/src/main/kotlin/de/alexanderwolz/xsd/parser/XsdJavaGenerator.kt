@@ -14,8 +14,9 @@ class XsdJavaGenerator(val outputDir: File) {
         episodes: Collection<File>,
         catalog: File?,
         createEpisode: Boolean,
+        flags: Collection<Flags>?,
         packageName: String?
-    ) = generate(listOf(schema), bindings, episodes, catalog, createEpisode, packageName)
+    ) = generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
 
 
     fun generate(
@@ -24,6 +25,7 @@ class XsdJavaGenerator(val outputDir: File) {
         episodes: Collection<File>,
         catalog: File?,
         createEpisode: Boolean,
+        flags: Collection<Flags>?,
         packageName: String?
     ): Boolean {
 
@@ -46,12 +48,10 @@ class XsdJavaGenerator(val outputDir: File) {
         val args = Arguments()
         args.add("-d", outputDir.absolutePath)
         args.add("-encoding", "UTF-8")
-        args.add("-extension")
-        args.add("-XautoNameResolution")
 
-        args.add("-Xequals")
-        args.add("-XhashCode")
-        args.add("-XtoString")
+        (flags ?: Flags.DEFAULTS).forEach {
+            args.add(it.value, null)
+        }
 
         packageName?.let {
             args.add("-p", it)
@@ -101,6 +101,26 @@ class XsdJavaGenerator(val outputDir: File) {
         return true
     }
 
+    enum class Flags(val value: String) {
+        EXTENSION("-extension"),
+        MARK_GENERATED("-mark-generated"),
+        AUTO_NAME_RESOLUTION("-XautoNameResolution"),
+        GENERATE_EQUALS("-Xequals"),
+        GENERATE_HASH_CODE("-XhashCode"),
+        GENERATE_TO_STRING("-XtoString");
+
+        companion object {
+            val DEFAULTS = listOf(
+                EXTENSION,
+                AUTO_NAME_RESOLUTION,
+                MARK_GENERATED,
+                GENERATE_EQUALS,
+                GENERATE_HASH_CODE,
+                GENERATE_TO_STRING
+            )
+        }
+    }
+
     private class Arguments() {
 
         private val argsList = ArrayList<String>()
@@ -109,14 +129,19 @@ class XsdJavaGenerator(val outputDir: File) {
             argsList.add(value)
         }
 
-        fun add(key: String, value: String) {
-            if (!key.startsWith("-")) throw IllegalArgumentException("Key must start with -")
-            argsList.add(key)
-            add(value)
+        fun add(key: String, value: String?) {
+            argsList.add(Key(key).name)
+            value?.let { argsList.add(value) }
         }
 
         fun getArgs(): Array<String> {
             return argsList.toTypedArray()
+        }
+
+        data class Key(val name: String) {
+            init {
+                if (!name.startsWith("-")) throw IllegalArgumentException("Key must start with -")
+            }
         }
     }
 

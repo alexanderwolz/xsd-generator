@@ -1,5 +1,6 @@
-package de.alexanderwolz.xsd.parser
+package de.alexanderwolz.xsd.parser.task
 
+import de.alexanderwolz.xsd.parser.XsdJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -32,11 +33,15 @@ open class XsdJavaGeneratorTask : DefaultTask() {
 
     @get:Input
     @Optional
+    var flags: Collection<XsdJavaGenerator.Flags>? = null
+
+    @get:Input
+    @Optional
     var packageName: String? = null
 
     @TaskAction
     fun run() {
         val generator = XsdJavaGenerator(outputDir)
-        generator.generate(schemas, bindings, episodes, catalog, createEpisode, packageName)
+        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
 }
