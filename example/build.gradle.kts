@@ -75,18 +75,26 @@ tasks.register("generateJaxbWithDependencies") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
-        val schemas = listOf(File(schemaFolder, "complexParent_v6.xsd"))
-        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }
-        val depSchema = File(schemaFolder, "articleListCollection_v3.xsd")
-        val depBindings = listOf(File(depSchema.parent, "${depSchema.nameWithoutExtension}.xjb.xml"))
-        val dependencies = mapOf(depSchema to depBindings)
-        val catalog = null
-        val createEpisode = false
-        val flags = XsdJavaGenerator.Flags.values().toList()
-        val packageName = null
-        generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+        generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"))
     }
+}
+
+private fun generate(schema: String, deps: Collection<String> = emptyList()): Boolean {
+    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
+    val schemas = listOf(File(schemaFolder, schema))
+    val bindings = schemas.map { File(schemaFolder, "${it.nameWithoutExtension}.xjb.xml") }
+    val dependencies = HashMap<File, Collection<File>>()
+    deps.forEach {
+        val depSchema = File(schemaFolder, it)
+        val depBindings = listOf(File(depSchema.parent, "${depSchema.nameWithoutExtension}.xjb.xml"))
+        dependencies[depSchema] = depBindings
+    }
+    val catalog = null
+    val createEpisode = false
+    val flags = XsdJavaGenerator.Flags.values().toList()
+    val packageName = "com.vw.mbb.generated"
+    return generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+
 }
 
 tasks.named("compileJava") {
