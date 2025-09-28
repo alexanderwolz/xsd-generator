@@ -1,4 +1,4 @@
-package de.alexanderwolz.xsd.parser
+package de.alexanderwolz.xsd.generator
 
 import com.sun.tools.xjc.Driver
 import org.slf4j.LoggerFactory
@@ -102,6 +102,7 @@ class XsdJavaGenerator(val outputDir: File) {
     }
 
     enum class Flags(val value: String) {
+
         EXTENSION("-extension"),
         MARK_GENERATED("-mark-generated"),
         AUTO_NAME_RESOLUTION("-XautoNameResolution"),
@@ -113,10 +114,7 @@ class XsdJavaGenerator(val outputDir: File) {
             val DEFAULTS = listOf(
                 EXTENSION,
                 AUTO_NAME_RESOLUTION,
-                MARK_GENERATED,
-                GENERATE_EQUALS,
-                GENERATE_HASH_CODE,
-                GENERATE_TO_STRING
+                MARK_GENERATED
             )
         }
     }
@@ -130,18 +128,13 @@ class XsdJavaGenerator(val outputDir: File) {
         }
 
         fun add(key: String, value: String?) {
-            argsList.add(Key(key).name)
+            if (!key.startsWith("-")) throw IllegalArgumentException("Key must start with -")
+            argsList.add(key)
             value?.let { argsList.add(value) }
         }
 
         fun getArgs(): Array<String> {
             return argsList.toTypedArray()
-        }
-
-        data class Key(val name: String) {
-            init {
-                if (!name.startsWith("-")) throw IllegalArgumentException("Key must start with -")
-            }
         }
     }
 

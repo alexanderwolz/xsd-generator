@@ -1,6 +1,6 @@
-package de.alexanderwolz.xsd.parser.task
+package de.alexanderwolz.xsd.generator.task
 
-import de.alexanderwolz.xsd.parser.XsdJavaGenerator
+import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile

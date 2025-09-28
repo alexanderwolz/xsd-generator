@@ -1,10 +1,10 @@
-import de.alexanderwolz.xsd.parser.XsdJavaGenerator
-import de.alexanderwolz.xsd.parser.XsdJavaGeneratorTask
+import de.alexanderwolz.xsd.generator.XsdJavaGenerator
+import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 
 buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
-        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("parser-*.jar"))))
+        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("generator-*.jar"))))
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
         classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
@@ -71,7 +71,7 @@ tasks.register("generateJaxbAlternative") {
         val allBindings = allSchemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
 
         logger.info("Generating from ${allSchemas.size} schema(s)")
-        generator.generate(allSchemas, allBindings, emptyList(), null, false, null)
+        generator.generate(allSchemas, allBindings, emptyList(), null, false, null,null)
         logger.info("Successfully generated Java classes")
     }
 }
