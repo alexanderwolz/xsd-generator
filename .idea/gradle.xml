@@ -4,7 +4,13 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="openjdk-22" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/example" />
+            <option value="$PROJECT_DIR$/parser" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>
