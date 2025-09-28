@@ -64,17 +64,6 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
 tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
-    inputs.dir(xjcSchemaFolder)
-    outputs.dir(xjcGenDir)
-
-    doFirst {
-        // SLF4J Simple Logger konfigurieren
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO")
-        System.setProperty("org.slf4j.simpleLogger.logFile", "System.out")
-        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
-        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "HH:mm:ss")
-    }
-
     doLast {
         val generator = XsdJavaGenerator(xjcGenDir.get().asFile)
         val schemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
