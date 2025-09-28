@@ -1,9 +1,11 @@
 package de.alexanderwolz.xsd.generator
 
 import com.sun.tools.xjc.Driver
+import de.alexanderwolz.xsd.generator.exception.XsdCompileException
 import org.slf4j.LoggerFactory
-import java.io.File
+import java.io.*
 import java.nio.charset.Charset
+import kotlin.text.split
 
 class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8) {
 
@@ -91,15 +93,55 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
 
         logger.info("Executing args: ${args.getArgs().joinToString(separator = " ")}")
 
-        val statusStream = System.out
-        val outStream = System.out
-        val exitCode = Driver.run(args.getArgs(), statusStream, outStream)
+
+        val statusStream = ByteArrayOutputStream()
+        val errorStream = ByteArrayOutputStream()
+
+        val exitCode = Driver.run(
+            args.getArgs(),
+            PrintStream(statusStream),
+            PrintStream(errorStream)
+        )
+
+        if (logger.isInfoEnabled) {
+            val statusLines = parseStatus(statusStream.use { it.toString() })
+            statusLines.forEach {
+                logger.info(it)
+            }
+        }
+
+        val errors = parseErrors(errorStream.use { it.toString() })
+
         if (exitCode != 0) {
-            throw Exception("XJC failed with exit code $exitCode")
+            throw XsdCompileException(exitCode, errors)
         }
 
         logger.info("XJC generation successful.")
         return true
+    }
+
+    private fun parseStatus(statusText: String): List<String> {
+        return statusText.split("\n").filter { it.isNotBlank() }
+    }
+
+    private fun parseErrors(errorText: String): List<String> {
+        val errors = ArrayList<String>()
+        val splits = errorText.split("\n").filter { it.isNotBlank() }
+        if (splits.isNotEmpty()) {
+            var builder = StringBuilder()
+            splits.forEachIndexed { i, it ->
+                if (it.startsWith("[ERROR] ")) {
+                    if (i > 0) {
+                        errors.add(builder.toString())
+                    }
+                    builder = StringBuilder(it.substring(7))
+                } else {
+                    builder.append("\n${it.trim()}")
+                }
+            }
+            errors.add(builder.toString())
+        }
+        return errors
     }
 
     enum class Flags(val value: String) {

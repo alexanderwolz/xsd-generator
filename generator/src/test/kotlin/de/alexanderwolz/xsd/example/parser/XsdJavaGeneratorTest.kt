@@ -1,6 +1,7 @@
 package de.alexanderwolz.xsd.example.parser
 
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
+import de.alexanderwolz.xsd.generator.exception.XsdCompileException
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -17,7 +18,6 @@ class XsdJavaGeneratorTest {
 
     @BeforeEach
     fun before() {
-        println("Clearing $outputDir")
         outputDir.deleteRecursively()
     }
 
@@ -261,10 +261,10 @@ class XsdJavaGeneratorTest {
         val createEpisode = false
         val flags = null
         val packageName = null
-        assertThrows<Exception> {
+        assertThrows<XsdCompileException> {
             //It must fail here, as the schema file from the 2nd binding is not specified
             generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
-        }
+        }.printStackTrace()
     }
 
     @Test
@@ -333,7 +333,7 @@ class XsdJavaGeneratorTest {
         assertThrows<NoSuchElementException> {
             //It must fail here, as the episode does not exist
             generator.generate(schema, bindings, episodes, catalog, createEpisode, flags, packageName)
-        }
+        }.printStackTrace()
     }
 
     @Test
