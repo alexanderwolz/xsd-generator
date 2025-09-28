@@ -1,11 +1,12 @@
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
-import java.nio.charset.Charset
 
 buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
-        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-v*.jar"))))
+        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
+        //classpath("de.alexanderwolz:xsd-generator:1.0.0")
+
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
         classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
@@ -17,11 +18,12 @@ plugins {
     kotlin("jvm")
 }
 
-group = "de.alexanderwolz"
-version = "1.0-SNAPSHOT"
-
 repositories {
     mavenCentral()
+}
+
+kotlin {
+    jvmToolchain(22)
 }
 
 dependencies {
@@ -106,8 +108,4 @@ tasks.named("compileKotlin") {
 
 tasks.test {
     useJUnitPlatform()
-}
-
-kotlin {
-    jvmToolchain(22)
 }
