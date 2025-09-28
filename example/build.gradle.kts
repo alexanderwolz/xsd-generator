@@ -48,6 +48,7 @@ tasks.named("compileKotlin") {
     dependsOn("generateJaxb")
 }
 
+//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     outputDir = xjcGenDir.get().asFile
     schemas = fileTree(xjcSchemaFolder) { include("*.xsd") }.files
@@ -59,11 +60,20 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     packageName = null
 }
 
+//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     inputs.dir(xjcSchemaFolder)
     outputs.dir(xjcGenDir)
+
+    doFirst {
+        // SLF4J Simple Logger konfigurieren
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "INFO")
+        System.setProperty("org.slf4j.simpleLogger.logFile", "System.out")
+        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
+        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "HH:mm:ss")
+    }
 
     doLast {
         val generator = XsdJavaGenerator(xjcGenDir.get().asFile)
