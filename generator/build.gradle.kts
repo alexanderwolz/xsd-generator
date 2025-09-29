@@ -49,8 +49,8 @@ publishing {
                 url.set("https://github.com/alexanderwolz/xsd-generator")
                 licenses {
                     license {
-                        name.set("Apache License 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                        name.set("AGPL-3.0")
+                        url.set("https://www.gnu.org/licenses/agpl-3.0.html")
                     }
                 }
                 developers {
