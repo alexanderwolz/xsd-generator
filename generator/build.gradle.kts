@@ -22,7 +22,7 @@ kotlin {
 
 dependencies {
     api("org.slf4j:slf4j-api:2.0.17")
-    api("org.glassfish.jaxb:jaxb-xjc:4.0.5")
+    implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
@@ -35,6 +35,19 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Implementation-Title" to project.name,
+            "Implementation-Version" to project.version,
+            "Implementation-Vendor" to "Alexander Wolz",
+            "Built-By" to System.getProperty("user.name"),
+            "Built-JDK" to System.getProperty("java.version"),
+            "Created-By" to "Gradle ${gradle.gradleVersion}"
+        )
+    }
 }
 
 //see also https://github.com/gradle-nexus/publish-plugin/tree/v2.0.0
