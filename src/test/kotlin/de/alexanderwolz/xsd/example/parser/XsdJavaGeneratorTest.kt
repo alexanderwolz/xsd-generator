@@ -13,7 +13,7 @@ import java.io.File
 
 class XsdJavaGeneratorTest {
 
-    private val schemaDir = File("../schemas")
+    private val schemaDir = File("schemas")
     private val outputParent = File("build/generated")
     private val outputDir = File(outputParent, "/sources/xjc/main/java")
     private val generator = XsdJavaGenerator(outputDir)
