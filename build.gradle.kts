@@ -31,8 +31,9 @@ kotlin {
 buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
-        //classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
-        classpath("de.alexanderwolz:xsd-generator:1.0.1")
+        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
+        //classpath("de.alexanderwolz:xsd-generator:1.0.1")
+        classpath("de.alexanderwolz:commons-log:1.0.0")
 
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
@@ -57,8 +58,8 @@ dependencies {
     testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 }
 
-val xjcGenDir = fileTree("build/generated/sources/xjc/main/java").dir
-val schemaFolder = fileTree("schemas").dir
+val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java").get().asFile
+val schemaFolder = layout.projectDirectory.dir("schemas").asFile
 
 sourceSets {
     test {
@@ -78,19 +79,6 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     createEpisode = false
     flags = XsdJavaGenerator.Flags.values().toList()
     packageName = null
-
-    doFirst {
-        logger.lifecycle("=== generateJaxb ===")
-        logger.lifecycle("Output dir: ${xjcGenDir.absolutePath}")
-        if (xjcGenDir.exists()) {
-            xjcGenDir.deleteRecursively()
-        }
-        xjcGenDir.mkdirs()
-    }
-
-    doLast {
-        logger.lifecycle("=== generateJaxb ===")
-    }
 }
 
 
@@ -99,7 +87,7 @@ tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
+        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -121,7 +109,7 @@ tasks.register("generateJaxbWithDependencies") {
 }
 
 private fun generate(schema: String, deps: Collection<String> = emptyList()): Boolean {
-    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8, logger = logger)
+    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
     val schemas = listOf(File(schemaFolder, schema))
     val bindings = schemas.map { File(schemaFolder, "${it.nameWithoutExtension}.xjb.xml") }
     val dependencies = HashMap<File, Collection<File>>()
@@ -144,7 +132,6 @@ tasks.compileTestKotlin{
 
 tasks.test {
     useJUnitPlatform()
-    dependsOn(generateJaxb)
 }
 
 nexusPublishing {

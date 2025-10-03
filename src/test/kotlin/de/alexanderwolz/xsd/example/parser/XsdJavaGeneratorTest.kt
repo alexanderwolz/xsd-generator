@@ -36,6 +36,14 @@ class XsdJavaGeneratorTest {
     }
 
     @Test
+    fun testSchemaFolder() {
+        assertTrue { schemaDir.exists() }
+        assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
+        assertTrue { schemaDir.listFiles{it.name.endsWith("xjb.xml")}?.size == 3 }
+        assertTrue { schemaDir.listFiles{it.extension == "xsd"}?.size == 8 }
+    }
+
+    @Test
     fun testGenerateSimple() {
         val schema = File(schemaDir, "order_v1.xsd")
         val bindings = emptyList<File>()
