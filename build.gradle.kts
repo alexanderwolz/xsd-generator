@@ -17,6 +17,17 @@ repositories {
     mavenCentral()
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
 buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
@@ -28,10 +39,6 @@ buildscript {
         classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
         classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     }
-}
-
-kotlin {
-    jvmToolchain(22)
 }
 
 dependencies {
@@ -73,9 +80,8 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     packageName = null
 
     doFirst {
-        logger.lifecycle("=== generateJaxb doFirst ===")
+        logger.lifecycle("=== generateJaxb ===")
         logger.lifecycle("Output dir: ${xjcGenDir.absolutePath}")
-        logger.lifecycle("Output dir exists before: ${xjcGenDir.exists()}")
         if (xjcGenDir.exists()) {
             xjcGenDir.deleteRecursively()
         }
@@ -83,9 +89,7 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     }
 
     doLast {
-        logger.lifecycle("=== generateJaxb doLast ===")
-        logger.lifecycle("Output dir exists: ${xjcGenDir.exists()}")
-        logger.lifecycle("Files in output dir: ${xjcGenDir.listFiles()?.map { it.name }}")
+        logger.lifecycle("=== generateJaxb ===")
     }
 }
 

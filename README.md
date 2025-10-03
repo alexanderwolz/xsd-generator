@@ -34,6 +34,7 @@ with Maven
 ## 🪄 Example
 
 ```kotlin
+val generator = XsdJavaGenerator("build/generated/xjc")
 val schema = File(schemaDir, "articleListCollection_v3.xsd")
 val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
 val episodes = emptyList<File>()
