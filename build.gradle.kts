@@ -1,5 +1,6 @@
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
+import java.util.Base64
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -14,6 +15,7 @@ group = "de.alexanderwolz"
 version = "1.1.0"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -29,11 +31,15 @@ kotlin {
 }
 
 buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
         classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
         //classpath("de.alexanderwolz:xsd-generator:1.0.1")
-        classpath("de.alexanderwolz:commons-log:1.0.0")
+        classpath("de.alexanderwolz:commons-log:1.1.0")
 
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
         classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
@@ -43,7 +49,7 @@ buildscript {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-log:1.0.0")
+    implementation("de.alexanderwolz:commons-log:1.1.0")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11")
@@ -126,12 +132,89 @@ private fun generate(schema: String, deps: Collection<String> = emptyList()): Bo
 
 }
 
-tasks.compileTestKotlin{
+tasks.compileTestKotlin {
     dependsOn(generateJaxb)
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Implementation-Title" to project.name,
+            "Implementation-Version" to project.version,
+            "Implementation-Vendor" to "Alexander Wolz",
+            "Built-By" to System.getProperty("user.name"),
+            "Built-JDK" to System.getProperty("java.version"),
+            "Created-By" to "Gradle ${gradle.gradleVersion}"
+        )
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+//see also https://github.com/gradle-nexus/publish-plugin/tree/v2.0.0
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            pom {
+                name.set("HTTP Client")
+                description.set("Sophisticated http client wrapper")
+                url.set("https://github.com/alexanderwolz/http-client")
+                licenses {
+                    license {
+                        name.set("AGPL-3.0")
+                        url.set("https://www.gnu.org/licenses/agpl-3.0.html")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("alexanderwolz")
+                        name.set("Alexander Wolz")
+                        url.set("https://www.alexanderwolz.de")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/alexanderwolz/http-client.git")
+                    developerConnection.set("scm:git:ssh://git@github.com/alexanderwolz/http-client.git")
+                    url.set("https://github.com/alexanderwolz/http-client")
+                }
+            }
+        }
+    }
+}
+
+signing {
+    val signingKey = System.getenv("GPG_PRIVATE_KEY")
+    val signingPassword = System.getenv("GPG_PASSPHRASE")
+
+    if (signingKey != null && signingPassword != null) {
+        logger.info("GPG credentials found in System")
+        val decodedKey = String(Base64.getDecoder().decode(signingKey))
+        useInMemoryPgpKeys(decodedKey, signingPassword)
+        sign(publishing.publications["mavenJava"])
+    } else {
+        logger.info("No GPG credentials found in System, using cmd..")
+        useGpgCmd()
+        sign(publishing.publications["mavenJava"])
+    }
 }
 
 nexusPublishing {

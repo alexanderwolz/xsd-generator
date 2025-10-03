@@ -1,6 +1,5 @@
-package de.alexanderwolz.xsd.example.parser
+package de.alexanderwolz.xsd.generator
 
-import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue

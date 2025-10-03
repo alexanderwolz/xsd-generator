@@ -3,12 +3,13 @@ package de.alexanderwolz.xsd.generator
 import com.sun.tools.xjc.Driver
 import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
+import org.slf4j.Logger as LoggerSLF4J
 import java.io.*
 import java.nio.charset.Charset
 
-class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8) {
+class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8, logger: LoggerSLF4J? = null) {
 
-    private val logger = Logger(javaClass)
+    private val logger = logger?.let { Logger(logger) } ?: Logger(javaClass)
 
     fun generate(
         schemas: List<File>,
@@ -116,9 +117,9 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             args.getArgs(), PrintStream(statusStream), PrintStream(errorStream)
         )
 
-        logger.info {
-            val statusLines = parseStatus(statusStream.use { it.toString() })
-            statusLines.joinToString(separator = "\n")
+        val statusLines = parseStatus(statusStream.use { it.toString() })
+        statusLines.forEach {
+            logger.info { it }
         }
 
         val errors = parseErrors(errorStream.use { it.toString() })

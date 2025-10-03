@@ -1,5 +1,4 @@
-package de.alexanderwolz.xsd.example
-
+package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.model.article.v3.Article
 import de.alexanderwolz.model.article.v3.ObjectFactory
@@ -12,8 +11,7 @@ import java.io.StringWriter
 import javax.xml.namespace.QName
 import javax.xml.transform.stream.StreamSource
 
-
-class Application() {
+class Example() {
 
     fun start() {
         val article1 = createArticleFromScratch()
@@ -62,7 +60,7 @@ class Application() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            Application().start()
+            Example().start()
         }
     }
 
