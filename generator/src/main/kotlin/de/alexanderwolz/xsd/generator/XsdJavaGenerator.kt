@@ -1,16 +1,14 @@
 package de.alexanderwolz.xsd.generator
 
 import com.sun.tools.xjc.Driver
+import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.*
 import java.nio.charset.Charset
-import kotlin.text.split
 
-class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8, logger: Logger? = null) {
+class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF_8) {
 
-    private val logger = logger ?: LoggerFactory.getLogger(javaClass)
+    private val logger = Logger(javaClass)
 
     fun generate(
         schemas: List<File>,
@@ -21,7 +19,7 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         flags: List<Flags>? = null,
         packageName: String? = null
     ): Boolean {
-        logger.info("Generating schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.keys.joinToString { it.name }})")
+        logger.info { "Generating schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.keys.joinToString { it.name }})" }
 
         val episodes = ArrayList<File>()
         dependencies.forEach { entry ->
@@ -29,7 +27,7 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             val dependencyBindings = entry.value
             val episode = File(outputDir, "${dependency.nameWithoutExtension}.episode")
             if (!episode.exists()) {
-                logger.info("Episode for dependency ${dependency.name} does not exist, starting generation..")
+                logger.info { "Episode for dependency ${dependency.name} does not exist, starting generation.." }
                 generate(listOf(dependency), dependencyBindings, emptyList(), catalog, true, flags, packageName)
             }
             episodes.add(episode)
@@ -48,9 +46,7 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         packageName: String?
     ): Boolean {
 
-        if (logger.isInfoEnabled) {
-            logger.info("Parsing schemas: ${schemas.joinToString { it.name }}")
-        }
+        logger.info { "Parsing schemas: ${schemas.joinToString { it.name }}" }
 
         if (schemas.isEmpty()) {
             throw NoSuchElementException("Schemas must be not be empty")
@@ -79,18 +75,14 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         }
 
         bindings.forEach { binding ->
-            if (logger.isDebugEnabled) {
-                logger.debug("Using binding: ${binding.absolutePath}")
-            }
+            logger.debug { "Using binding: ${binding.absolutePath}" }
             if (binding.exists()) {
                 args.add("-b", binding.absolutePath)
             } else throw NoSuchElementException("Binding $binding does not exist")
         }
 
         episodes.forEach { episode ->
-            if (logger.isDebugEnabled) {
-                logger.debug("Using episode: ${episode.absolutePath}")
-            }
+            logger.debug { "Using episode: ${episode.absolutePath}" }
             if (episode.exists()) {
                 //Info: we have to bind episode like bindings
                 args.add("-b", episode.absolutePath)
@@ -115,24 +107,18 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             args.add(it.absolutePath)
         }
 
-        if (logger.isDebugEnabled) {
-            logger.debug("Executing args: ${args.getArgs().joinToString(separator = " ")}")
-        }
+        logger.debug { "Executing args: ${args.getArgs().joinToString(separator = " ")}" }
 
         val statusStream = ByteArrayOutputStream()
         val errorStream = ByteArrayOutputStream()
 
         val exitCode = Driver.run(
-            args.getArgs(),
-            PrintStream(statusStream),
-            PrintStream(errorStream)
+            args.getArgs(), PrintStream(statusStream), PrintStream(errorStream)
         )
 
-        if (logger.isInfoEnabled) {
+        logger.info {
             val statusLines = parseStatus(statusStream.use { it.toString() })
-            statusLines.forEach {
-                logger.info(it)
-            }
+            statusLines.joinToString(separator = "\n")
         }
 
         val errors = parseErrors(errorStream.use { it.toString() })
@@ -141,9 +127,7 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
             throw XsdCompileException(exitCode, errors)
         }
 
-        if (logger.isInfoEnabled) {
-            logger.info("XJC generation successful.")
-        }
+        logger.info { "XJC generation successful." }
         return true
     }
 
@@ -182,8 +166,7 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
 
         companion object {
             val DEFAULTS = listOf(
-                EXTENSION,
-                AUTO_NAME_RESOLUTION
+                EXTENSION, AUTO_NAME_RESOLUTION
             )
         }
     }

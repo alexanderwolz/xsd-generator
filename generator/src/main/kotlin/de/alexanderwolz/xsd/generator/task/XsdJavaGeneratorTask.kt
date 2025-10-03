@@ -47,7 +47,7 @@ open class XsdJavaGeneratorTask : DefaultTask() {
     @TaskAction
     fun run() {
         val encoding = Charset.forName(encoding.uppercase())
-        val generator = XsdJavaGenerator(outputDir, encoding, logger)
+        val generator = XsdJavaGenerator(outputDir, encoding)
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
 }

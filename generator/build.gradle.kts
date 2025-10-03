@@ -1,7 +1,10 @@
+import java.util.Base64
+
 plugins {
     id("java-library")
     kotlin("jvm")
     id("maven-publish")
+    jacoco
     signing
 }
 
@@ -21,7 +24,7 @@ kotlin {
 }
 
 dependencies {
-    api("org.slf4j:slf4j-api:2.0.17")
+    implementation("de.alexanderwolz:commons-log:1.0.0")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
     compileOnly(gradleApi())
 
@@ -84,6 +87,17 @@ publishing {
 }
 
 signing {
-    useGpgCmd()
-    sign(publishing.publications["mavenJava"])
+    val signingKey = System.getenv("GPG_PRIVATE_KEY")
+    val signingPassword = System.getenv("GPG_PASSPHRASE")
+
+    if (signingKey != null && signingPassword != null) {
+        logger.info("GPG credentials found in System")
+        val decodedKey = String(Base64.getDecoder().decode(signingKey))
+        useInMemoryPgpKeys(decodedKey, signingPassword)
+        sign(publishing.publications["mavenJava"])
+    } else {
+        logger.info("No GPG credentials found in System, using cmd..")
+        useGpgCmd()
+        sign(publishing.publications["mavenJava"])
+    }
 }
