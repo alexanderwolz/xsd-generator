@@ -2,10 +2,8 @@ package de.alexanderwolz.xsd.example.parser
 
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -273,7 +271,7 @@ class XsdJavaGeneratorTest {
         assertThrows<XsdCompileException> {
             //It must fail here, as the schema file from the 2nd binding is not specified
             generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
-        }.printStackTrace()
+        }
     }
 
     @Test
@@ -342,7 +340,7 @@ class XsdJavaGeneratorTest {
         assertThrows<NoSuchElementException> {
             //It must fail here, as the episode does not exist
             generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
-        }.printStackTrace()
+        }
     }
 
     @Test

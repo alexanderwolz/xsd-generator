@@ -42,6 +42,7 @@ dependencies {
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
+    testImplementation("org.slf4j:slf4j-simple:2.0.17")
     testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     testImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
     testImplementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
@@ -53,13 +54,15 @@ val xjcGenDir = fileTree("build/generated/sources/xjc/main/java").dir
 val schemaFolder = fileTree("schemas").dir
 
 sourceSets {
-    named("main") {
-        java.srcDir(xjcGenDir)
+    test {
+        java {
+            srcDir(xjcGenDir)
+        }
     }
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
+val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
     bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
@@ -68,7 +71,24 @@ tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     createEpisode = false
     flags = XsdJavaGenerator.Flags.values().toList()
     packageName = null
+
+    doFirst {
+        logger.lifecycle("=== generateJaxb doFirst ===")
+        logger.lifecycle("Output dir: ${xjcGenDir.absolutePath}")
+        logger.lifecycle("Output dir exists before: ${xjcGenDir.exists()}")
+        if (xjcGenDir.exists()) {
+            xjcGenDir.deleteRecursively()
+        }
+        xjcGenDir.mkdirs()
+    }
+
+    doLast {
+        logger.lifecycle("=== generateJaxb doLast ===")
+        logger.lifecycle("Output dir exists: ${xjcGenDir.exists()}")
+        logger.lifecycle("Files in output dir: ${xjcGenDir.listFiles()?.map { it.name }}")
+    }
 }
+
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 tasks.register("generateJaxbAlternative") {
@@ -114,20 +134,13 @@ private fun generate(schema: String, deps: Collection<String> = emptyList()): Bo
 
 }
 
-tasks.named("compileJava") {
-    dependsOn("generateJaxb")
-}
-tasks.named("compileKotlin") {
-    dependsOn("generateJaxb")
-}
-
-tasks.jar {
-    exclude("de/alexanderwolz/model/**")
-    exclude("de/alexanderwolz/generated/**")
+tasks.compileTestKotlin{
+    dependsOn(generateJaxb)
 }
 
 tasks.test {
     useJUnitPlatform()
+    dependsOn(generateJaxb)
 }
 
 nexusPublishing {
