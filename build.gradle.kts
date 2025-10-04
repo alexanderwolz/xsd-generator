@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.2.1"
+version = "1.3.0"
 
 repositories {
     mavenLocal()
@@ -31,26 +31,9 @@ kotlin {
     jvmToolchain(17)
 }
 
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-        //We need precompiled classes for the Generator to be used in Gradle
-        //classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
-        classpath("de.alexanderwolz:xsd-generator:1.2.0")
-        classpath("de.alexanderwolz:commons-log:1.1.0")
-
-        classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
-        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.6")
-        classpath("org.glassfish.jaxb:jaxb-xjc:4.0.6")
-        classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
-    }
-}
-
 dependencies {
     implementation("de.alexanderwolz:commons-log:1.1.0")
+    implementation("de.alexanderwolz:commons-util:1.3.1")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11")
@@ -97,7 +80,7 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -119,13 +102,24 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
 }
 
 private fun generate(schema: String, vararg dependencies: String) {
-    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
-    generator.generate(
+    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
+    generator.generateWithDependencies(
         schema,
         dependencies.toList(),
         schemaFolder = schemaFolder,
         flags = Flags.values().toList()
     )
+}
+
+tasks.clean {
+    doFirst {
+        delete(
+            "buildSrc/build",
+            "buildSrc/.gradle",
+            "build/generated",
+            ".gradle"
+        )
+    }
 }
 
 tasks.compileTestKotlin {
@@ -134,6 +128,11 @@ tasks.compileTestKotlin {
 
 tasks.test {
     useJUnitPlatform()
+
+    testLogging {
+        showStandardStreams = true
+        events("passed", "skipped", "failed", "standardOut", "standardError")
+    }
 
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",

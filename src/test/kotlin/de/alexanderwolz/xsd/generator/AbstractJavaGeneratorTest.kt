@@ -1,9 +1,11 @@
 package de.alexanderwolz.xsd.generator
 
+import de.alexanderwolz.xsd.generator.instance.XjcJavaGenerator
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import kotlin.test.assertIs
 
 abstract class AbstractJavaGeneratorTest {
 
@@ -17,7 +19,7 @@ abstract class AbstractJavaGeneratorTest {
 
     @BeforeEach
     fun before() {
-        generator = XsdJavaGenerator(outputDir)
+        generator = XjcJavaGenerator(outputDir)
     }
 
     protected fun testIfExists(parent: File, fileNames: Collection<String>) {

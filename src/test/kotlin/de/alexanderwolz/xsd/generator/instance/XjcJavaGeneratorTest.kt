@@ -1,23 +1,20 @@
-package de.alexanderwolz.xsd.generator
+package de.alexanderwolz.xsd.generator.instance
 
+import de.alexanderwolz.xsd.generator.AbstractJavaGeneratorTest
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.test.assertEquals
 
-class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
+class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
 
     @Test
     fun testSchemaFolder() {
-        assertTrue { schemaDir.exists() }
-        assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
-        assertTrue { schemaDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
-        assertTrue { schemaDir.listFiles { it.extension == "xsd" }?.size == 8 }
+        Assertions.assertTrue { schemaDir.exists() }
+        Assertions.assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
+        Assertions.assertTrue { schemaDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
+        Assertions.assertTrue { schemaDir.listFiles { it.extension == "xsd" }?.size == 8 }
     }
 
     @Test
@@ -74,7 +71,7 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("$packageFolder/Order.java"))
         testIfExists(outputDir, listOf("order_v1.episode"))
-        assertTrue {
+        Assertions.assertTrue {
             val episode = File(outputDir, "order_v1.episode").readText()
             episode.contains("<jaxb:package name=\"com.test.xjc.generated\"/>") && episode.contains("<jaxb:class ref=\"com.test.xjc.generated.Order\"/>")
         }
@@ -105,7 +102,7 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
         testIfExists(outputDir, listOf("de/alexanderwolz/generated/v1/Order.java"))
         testIfExists(outputDir, listOf("order_v1.episode"))
-        assertTrue {
+        Assertions.assertTrue {
             val episode = File(outputDir, "order_v1.episode").readText()
             episode.contains("<jaxb:package name=\"de.alexanderwolz.generated.v1\"/>") && episode.contains("<jaxb:class ref=\"de.alexanderwolz.generated.v1.Order\"/>")
         }
@@ -180,7 +177,7 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
             )
         )
         testIfExists(outputDir, listOf("articleListCollection_v3.episode"))
-        assertTrue {
+        Assertions.assertTrue {
             val episode = File(outputDir, "articleListCollection_v3.episode").readText()
             episode.contains("<package name=\"de.alexanderwolz.model.article.v3\"/>")
                     && episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.ArticleListCollection\"/>")
@@ -356,13 +353,13 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         val createEpisode = false
         val flags = null
         val packageName = null
-        generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+        generator.generateWithDependencies(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
     }
 
 
     @Test
     fun testGenerateStringReferences() {
-        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
+        generator.generateWithDependencies("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/complex/v6/Complex.java",
@@ -376,5 +373,9 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         )
     }
 
+    @Test
+    fun testAutoResolve(){
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir)
+    }
 
 }
