@@ -1,5 +1,6 @@
 package de.alexanderwolz.xsd.generator.task
 
+import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -37,7 +38,7 @@ open class XsdJavaGeneratorTask : DefaultTask() {
 
     @get:Input
     @Optional
-    var flags: Collection<XsdJavaGenerator.Flags>? = null
+    var flags: Collection<Flags>? = null
 
     @get:Input
     @Optional

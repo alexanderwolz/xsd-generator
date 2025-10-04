@@ -6,25 +6,22 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class XsdJavaGeneratorTest {
 
     private val schemaDir = File("schemas")
-    private val outputParent = File("build/generated")
-    private val outputDir = File(outputParent, "/sources/xjc/main/java")
-    private val generator = XsdJavaGenerator(outputDir)
+    private lateinit var generator: XsdJavaGenerator
 
     private val defaultPackage = "generated"
 
+    @TempDir
+    private lateinit var outputDir:File
+
     @BeforeEach
     fun before() {
-        outputDir.deleteRecursively()
-    }
-
-    @AfterEach
-    fun after() {
-        outputParent.deleteRecursively()
+        generator = XsdJavaGenerator(outputDir)
     }
 
     private fun testIfExists(parent: File, fileNames: Collection<String>) {

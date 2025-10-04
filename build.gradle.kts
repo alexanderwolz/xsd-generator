@@ -1,3 +1,4 @@
+import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 import java.util.Base64
@@ -12,7 +13,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenLocal()
@@ -38,12 +39,12 @@ buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
         classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
-        //classpath("de.alexanderwolz:xsd-generator:1.0.1")
+        //classpath("de.alexanderwolz:xsd-generator:1.1.0")
         classpath("de.alexanderwolz:commons-log:1.1.0")
 
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
-        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
-        classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
+        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.6")
+        classpath("org.glassfish.jaxb:jaxb-xjc:4.0.6")
         classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     }
 }
@@ -84,7 +85,7 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     episodes = emptyList()
     catalog = null
     createEpisode = false
-    flags = XsdJavaGenerator.Flags.values().toList()
+    flags = Flags.values().toList()
     packageName = null
 }
 
@@ -100,7 +101,7 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
-        val flags = XsdJavaGenerator.Flags.values().toList()
+        val flags = Flags.values().toList()
         val packageName = null
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
@@ -127,14 +128,14 @@ private fun generate(schema: String, deps: Collection<String> = emptyList()): Bo
     }
     val catalog = null
     val createEpisode = false
-    val flags = XsdJavaGenerator.Flags.values().toList()
+    val flags = Flags.values().toList()
     val packageName = null
     return generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
 
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxbWithDependencies)
+    dependsOn(generateJaxb)
 }
 
 tasks.test {

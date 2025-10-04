@@ -156,41 +156,6 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
         return errors
     }
 
-    enum class Flags(val value: String) {
-
-        EXTENSION("-extension"),
-        MARK_GENERATED("-mark-generated"),
-        AUTO_NAME_RESOLUTION("-XautoNameResolution"),
-        GENERATE_EQUALS("-Xequals"),
-        GENERATE_HASH_CODE("-XhashCode"),
-        GENERATE_TO_STRING("-XtoString");
-
-        companion object {
-            val DEFAULTS = listOf(
-                EXTENSION, AUTO_NAME_RESOLUTION
-            )
-        }
-    }
-
-    private class Arguments() {
-
-        private val argsList = ArrayList<String>()
-
-        fun add(value: String) {
-            argsList.add(value)
-        }
-
-        fun add(key: String, value: String?) {
-            if (!key.startsWith("-")) throw IllegalArgumentException("Key must start with -")
-            argsList.add(key)
-            value?.let { argsList.add(value) }
-        }
-
-        fun getArgs(): Array<String> {
-            return argsList.toTypedArray()
-        }
-    }
-
     private fun getPackageNameFromNamespace(schemaFile: File): String {
         val content = schemaFile.readText()
         val default = "generated"
