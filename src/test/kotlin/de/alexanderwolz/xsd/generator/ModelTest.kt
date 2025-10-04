@@ -1,4 +1,4 @@
-package de.alexanderwolz.xsd.example
+package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.model.article.v3.Article
 import de.alexanderwolz.model.article.v3.ObjectFactory
@@ -10,10 +10,12 @@ import jakarta.xml.bind.JAXBElement
 import java.io.StringWriter
 import javax.xml.namespace.QName
 import javax.xml.transform.stream.StreamSource
+import kotlin.test.Test
 
-class Example() {
+class ModelTest() {
 
-    fun start() {
+    @Test
+    fun testModel() {
         val article1 = createArticleFromScratch()
         println(article1)
         val xml = createArticleXmlString(article1)
@@ -55,13 +57,6 @@ class Example() {
         marshaller.marshal(jaxbElement, stringWriter)
 
         return stringWriter.toString()
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Example().start()
-        }
     }
 
 }

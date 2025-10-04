@@ -356,13 +356,13 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         val createEpisode = false
         val flags = null
         val packageName = null
-        generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+        generator.generateWithDependencies(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
     }
 
 
     @Test
     fun testGenerateStringReferences() {
-        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
+        generator.generateWithDependencies("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/complex/v6/Complex.java",
@@ -376,5 +376,9 @@ class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
         )
     }
 
+    @Test
+    fun testAutoResolve(){
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir)
+    }
 
 }
