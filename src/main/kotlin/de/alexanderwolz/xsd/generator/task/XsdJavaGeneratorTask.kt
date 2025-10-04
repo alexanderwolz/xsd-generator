@@ -1,7 +1,7 @@
 package de.alexanderwolz.xsd.generator.task
 
 import de.alexanderwolz.xsd.generator.Flags
-import de.alexanderwolz.xsd.generator.instance.XjcXsdJavaGenerator
+import de.alexanderwolz.xsd.generator.instance.XjcJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -47,7 +47,7 @@ open class XsdJavaGeneratorTask : DefaultTask() {
     @TaskAction
     fun run() {
         val encoding = Charset.forName(encoding.uppercase())
-        val generator = XjcXsdJavaGenerator(outputDir, encoding, logger)
+        val generator = XjcJavaGenerator(outputDir, encoding, logger)
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
 }

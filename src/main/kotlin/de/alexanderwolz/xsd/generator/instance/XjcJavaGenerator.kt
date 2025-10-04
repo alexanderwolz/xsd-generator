@@ -13,7 +13,7 @@ import java.io.File
 import java.io.PrintStream
 import java.nio.charset.Charset
 
-class XjcXsdJavaGenerator(
+class XjcJavaGenerator(
     val outputDir: File,
     val encoding: Charset = Charsets.UTF_8,
     logger: LoggerSLF4J? = null
