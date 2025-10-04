@@ -1,6 +1,7 @@
-package de.alexanderwolz.xsd.generator
+package de.alexanderwolz.xsd.generator.task
 
-import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
+import de.alexanderwolz.xsd.generator.AbstractJavaGeneratorTest
+import de.alexanderwolz.xsd.generator.Flags
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.Test
 import java.io.File

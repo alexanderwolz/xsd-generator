@@ -7,13 +7,16 @@ import de.alexanderwolz.xsd.generator.Arguments
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
+import de.alexanderwolz.xsd.generator.model.XsdReference
+import org.w3c.dom.Element
 import org.slf4j.Logger as LoggerSLF4J
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.charset.Charset
+import javax.xml.parsers.DocumentBuilderFactory
 
-class XjcXsdJavaGenerator(
+class XjcJavaGenerator(
     val outputDir: File,
     val encoding: Charset = Charsets.UTF_8,
     logger: LoggerSLF4J? = null
@@ -31,14 +34,59 @@ class XjcXsdJavaGenerator(
         flags: List<Flags>?,
         packageName: String?
     ): Boolean {
-        //TODO resolve dependencies
         val schemaFile = File(schemaFolder, schema)
-        val content = schemaFile.readText()
-        val namespace = XsdUtils.getTargetNamespace(content) ?: throw Exception()
-        val packageName = XsdUtils.getPackageName(namespace)
-        println(namespace)
-        println(packageName)
+        val references = parseXsdReferences(schemaFile)
+        //TODO recursively
+        val allReferences = references
+        val dependencies = allReferences.map { File(schemaFolder, it.schemaLocation) }
+
+        println(logger.level)
+        dependencies.forEach {
+            logger.info { it.absolutePath }
+         }
         return false
+    }
+
+    fun parseXsdReferences(xsdFile: File): List<XsdReference> {
+        val references = ArrayList<XsdReference>()
+
+        val factory = DocumentBuilderFactory.newInstance().apply {
+            isNamespaceAware = true
+        }
+        val root = factory.newDocumentBuilder().parse(xsdFile).documentElement
+
+        val xsdNamespace = "http://www.w3.org/2001/XMLSchema"
+
+        root.getElementsByTagNameNS(xsdNamespace, "include").let { includes ->
+            for (i in 0 until includes.length) {
+                val element = includes.item(i) as Element
+                element.getAttribute("schemaLocation").takeIf { it.isNotEmpty() }?.let {
+                    references.add(XsdReference("include", it, null))
+                }
+            }
+        }
+
+        root.getElementsByTagNameNS(xsdNamespace, "import").let { imports ->
+            for (i in 0 until imports.length) {
+                val element = imports.item(i) as Element
+                val schemaLocation = element.getAttribute("schemaLocation")
+                val namespace = element.getAttribute("namespace")
+                if (schemaLocation.isNotEmpty()) {
+                    references.add(XsdReference("import", schemaLocation, namespace))
+                }
+            }
+        }
+
+        root.getElementsByTagNameNS(xsdNamespace, "redefine").let { redefines ->
+            for (i in 0 until redefines.length) {
+                val element = redefines.item(i) as Element
+                element.getAttribute("schemaLocation")?.takeIf { it.isNotEmpty() }?.let {
+                    references.add(XsdReference("redefine", it, null))
+                }
+            }
+        }
+
+        return references
     }
 
     override fun generateWithDependencies(
@@ -123,7 +171,7 @@ class XjcXsdJavaGenerator(
         args.add("-d", outputDir.absolutePath)
         args.add("-encoding", encoding.name())
 
-        (flags ?: Flags.Companion.DEFAULTS).forEach {
+        (flags ?: Flags.DEFAULTS).forEach {
             args.add(it.value, null)
         }
 

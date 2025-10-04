@@ -19,8 +19,7 @@ abstract class AbstractJavaGeneratorTest {
 
     @BeforeEach
     fun before() {
-        generator = XsdJavaGenerator.create(outputDir)
-        assertIs<XjcJavaGenerator>(generator)
+        generator = XjcJavaGenerator(outputDir)
     }
 
     protected fun testIfExists(parent: File, fileNames: Collection<String>) {
