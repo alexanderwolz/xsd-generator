@@ -1,5 +1,6 @@
 package de.alexanderwolz.xsd.generator
 
+
 import de.alexanderwolz.model.article.v3.Article
 import de.alexanderwolz.model.article.v3.ObjectFactory
 import de.alexanderwolz.model.article.v3.Status

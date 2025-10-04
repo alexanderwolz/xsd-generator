@@ -76,6 +76,7 @@ sourceSets {
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
+//TODO fix this: GitHub Runner complains about unknown articles:article reference
 val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
@@ -89,7 +90,7 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
 
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-tasks.register("generateJaxbAlternative") {
+val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
@@ -106,7 +107,7 @@ tasks.register("generateJaxbAlternative") {
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-tasks.register("generateJaxbWithDependencies") {
+val generateJaxbWithDependencies = tasks.register("generateJaxbWithDependencies") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
@@ -133,7 +134,7 @@ private fun generate(schema: String, deps: Collection<String> = emptyList()): Bo
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxb)
+    dependsOn(generateJaxbWithDependencies)
 }
 
 tasks.test {
