@@ -77,7 +77,8 @@ sourceSets {
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-//TODO fix this: GitHub Runner complains about unknown articles:article reference
+//TODO fix this: GitHub Runner complains about unknown definition
+//  src-resolve: Cannot resolve the name 'articles:article' to a(n) 'type definition' component.
 val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
@@ -108,34 +109,17 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-val generateJaxbWithDependencies = tasks.register("generateJaxbWithDependencies") {
+val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"))
+        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
+        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaFolder)
     }
-}
-
-private fun generate(schema: String, deps: Collection<String> = emptyList()): Boolean {
-    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
-    val schemas = listOf(File(schemaFolder, schema))
-    val bindings = schemas.map { File(schemaFolder, "${it.nameWithoutExtension}.xjb.xml") }
-    val dependencies = HashMap<File, Collection<File>>()
-    deps.forEach {
-        val depSchema = File(schemaFolder, it)
-        val depBindings = listOf(File(depSchema.parent, "${depSchema.nameWithoutExtension}.xjb.xml"))
-        dependencies[depSchema] = depBindings
-    }
-    val catalog = null
-    val createEpisode = false
-    val flags = Flags.values().toList()
-    val packageName = null
-    return generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
-
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxb)
+    dependsOn(generateJaxbSimple)
 }
 
 tasks.test {

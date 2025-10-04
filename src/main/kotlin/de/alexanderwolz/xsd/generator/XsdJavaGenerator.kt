@@ -12,6 +12,30 @@ class XsdJavaGenerator(val outputDir: File, val encoding: Charset = Charsets.UTF
     private val logger = logger?.let { Logger(logger) } ?: Logger(javaClass)
 
     fun generate(
+        schema: String,
+        dependencies: Collection<String> = emptyList(),
+        schemaFolder: File? = null,
+        bindingFolder: File? = schemaFolder,
+        bindingExtension: String = ".xjb.xml",
+        catalog: File? = null,
+        createEpisode: Boolean = false,
+        flags: List<Flags>? = null,
+        packageName: String? = null
+    ): Boolean {
+        val schemas = listOf(File(schemaFolder, schema))
+        val bindingExt = bindingExtension.takeIf { it.startsWith(".") } ?: ".$bindingExtension"
+        val bindings = schemas.map { File(bindingFolder, "${it.nameWithoutExtension}$bindingExt") }.filter { it.exists() }
+        val dependencyMap = HashMap<File, Collection<File>>()
+        dependencies.forEach { dependency ->
+            val depSchema = File(schemaFolder, dependency)
+            val depBindings = listOf(File(bindingFolder, "${depSchema.nameWithoutExtension}$bindingExt")).filter { it.exists() }
+            dependencyMap[depSchema] = depBindings
+        }
+        return generate(schemas, bindings, dependencyMap, catalog, createEpisode, flags, packageName)
+    }
+
+
+    fun generate(
         schemas: List<File>,
         bindings: List<File>,
         dependencies: Map<File, Collection<File>>,

@@ -40,7 +40,7 @@ val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
 val episodes = emptyList<File>()
 val catalog = null
 val createEpisode = true
-val flags = Flags.Defaults
+val flags = Flags.DEFAULTS
 val packageName = "com.domain.generated"
 generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
 ```

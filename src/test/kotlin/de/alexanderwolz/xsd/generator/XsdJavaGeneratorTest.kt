@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import kotlin.test.assertEquals
 
 class XsdJavaGeneratorTest {
 
@@ -17,7 +18,7 @@ class XsdJavaGeneratorTest {
     private val defaultPackage = "generated"
 
     @TempDir
-    private lateinit var outputDir:File
+    private lateinit var outputDir: File
 
     @BeforeEach
     fun before() {
@@ -35,8 +36,8 @@ class XsdJavaGeneratorTest {
     fun testSchemaFolder() {
         assertTrue { schemaDir.exists() }
         assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
-        assertTrue { schemaDir.listFiles{it.name.endsWith("xjb.xml")}?.size == 3 }
-        assertTrue { schemaDir.listFiles{it.extension == "xsd"}?.size == 8 }
+        assertTrue { schemaDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
+        assertTrue { schemaDir.listFiles { it.extension == "xsd" }?.size == 8 }
     }
 
     @Test
@@ -376,6 +377,23 @@ class XsdJavaGeneratorTest {
         val flags = null
         val packageName = null
         generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+    }
+
+
+    @Test
+    fun testGenerateStringReferences() {
+        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
+        testIfExists(
+            outputDir, listOf(
+                "de/alexanderwolz/model/complex/v6/Complex.java",
+                "de/alexanderwolz/model/article/v3/Article.java",
+                "de/alexanderwolz/model/article/v3/ArticleList.java",
+                "de/alexanderwolz/model/article/v3/Category.java",
+                "de/alexanderwolz/model/article/v3/Status.java",
+                "de/alexanderwolz/model/author/v2/Author.java",
+                "de/alexanderwolz/model/role/v6/Role.java"
+            )
+        )
     }
 
 
