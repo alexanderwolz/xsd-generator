@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.2.0"
+version = "1.2.1"
 
 repositories {
     mavenLocal()
@@ -38,8 +38,8 @@ buildscript {
     }
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
-        classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
-        //classpath("de.alexanderwolz:xsd-generator:1.1.0")
+        //classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
+        classpath("de.alexanderwolz:xsd-generator:1.2.0")
         classpath("de.alexanderwolz:commons-log:1.1.0")
 
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
