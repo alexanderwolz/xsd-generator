@@ -14,6 +14,37 @@ This repository provides generators for creating Java classes out of XSD schema 
 2. Copy  ```/generator/build/libs/*.jar``` into your project
 3. Use the parser directly or add the Gradle task to your build.gradle(.kts)
 
+## 📦 Getting the latest release
+
+You can pull the latest binaries from the central Maven repositories:
+
+with Gradle
+```kotlin
+implementation("de.alexanderwolz:xsd-generator-client:1.1.0")
+```
+with Maven
+```xml
+<dependency>
+  <groupId>de.alexanderwolz</groupId>
+  <artifactId>xsd-generator</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+## 🪄 Example
+
+```kotlin
+val generator = XsdJavaGenerator("build/generated/xjc")
+val schema = File(schemaDir, "articleListCollection_v3.xsd")
+val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+val episodes = emptyList<File>()
+val catalog = null
+val createEpisode = true
+val flags = Flags.Defaults
+val packageName = "com.domain.generated"
+generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
+```
+
 - - -
 
 Made with ❤️ in Bavaria
