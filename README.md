@@ -20,14 +20,14 @@ You can pull the latest binaries from the central Maven repositories:
 
 with Gradle
 ```kotlin
-implementation("de.alexanderwolz:xsd-generator-client:1.1.0")
+implementation("de.alexanderwolz:xsd-generator-client:1.2.0")
 ```
 with Maven
 ```xml
 <dependency>
   <groupId>de.alexanderwolz</groupId>
   <artifactId>xsd-generator</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -40,7 +40,7 @@ val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
 val episodes = emptyList<File>()
 val catalog = null
 val createEpisode = true
-val flags = Flags.Defaults
+val flags = Flags.DEFAULTS
 val packageName = "com.domain.generated"
 generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
 ```

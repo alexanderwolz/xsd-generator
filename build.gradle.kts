@@ -1,3 +1,4 @@
+import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 import java.util.Base64
@@ -12,7 +13,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenLocal()
@@ -38,12 +39,12 @@ buildscript {
     dependencies {
         //We need precompiled classes for the Generator to be used in Gradle
         classpath(fileTree(mapOf("dir" to "libs", "include" to listOf("xsd-generator-*.jar"))))
-        //classpath("de.alexanderwolz:xsd-generator:1.0.1")
+        //classpath("de.alexanderwolz:xsd-generator:1.1.0")
         classpath("de.alexanderwolz:commons-log:1.1.0")
 
         classpath("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
-        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.5")
-        classpath("org.glassfish.jaxb:jaxb-xjc:4.0.5")
+        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.6")
+        classpath("org.glassfish.jaxb:jaxb-xjc:4.0.6")
         classpath("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     }
 }
@@ -56,6 +57,7 @@ dependencies {
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
+    testImplementation(gradleTestKit())
     testImplementation("org.slf4j:slf4j-simple:2.0.17")
     testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     testImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
@@ -76,7 +78,8 @@ sourceSets {
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-//TODO fix this: GitHub Runner complains about unknown articles:article reference
+//TODO fix this: GitHub Runner complains about unknown definition
+//  src-resolve: Cannot resolve the name 'articles:article' to a(n) 'type definition' component.
 val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
@@ -84,7 +87,7 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     episodes = emptyList()
     catalog = null
     createEpisode = false
-    flags = XsdJavaGenerator.Flags.values().toList()
+    flags = Flags.values().toList()
     packageName = null
 }
 
@@ -100,45 +103,43 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
-        val flags = XsdJavaGenerator.Flags.values().toList()
+        val flags = Flags.values().toList()
         val packageName = null
         generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
 }
 
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
-val generateJaxbWithDependencies = tasks.register("generateJaxbWithDependencies") {
+val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"))
+        generate("complexParent_v6.xsd", "articleListCollection_v3.xsd")
     }
 }
 
-private fun generate(schema: String, deps: Collection<String> = emptyList()): Boolean {
+private fun generate(schema: String, vararg dependencies: String) {
     val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
-    val schemas = listOf(File(schemaFolder, schema))
-    val bindings = schemas.map { File(schemaFolder, "${it.nameWithoutExtension}.xjb.xml") }
-    val dependencies = HashMap<File, Collection<File>>()
-    deps.forEach {
-        val depSchema = File(schemaFolder, it)
-        val depBindings = listOf(File(depSchema.parent, "${depSchema.nameWithoutExtension}.xjb.xml"))
-        dependencies[depSchema] = depBindings
-    }
-    val catalog = null
-    val createEpisode = false
-    val flags = XsdJavaGenerator.Flags.values().toList()
-    val packageName = null
-    return generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
-
+    generator.generate(
+        schema,
+        dependencies.toList(),
+        schemaFolder = schemaFolder,
+        flags = Flags.values().toList()
+    )
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxbWithDependencies)
+    dependsOn(generateJaxbSimple)
 }
 
 tasks.test {
     useJUnitPlatform()
+
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
 }
 
 tasks.jar {

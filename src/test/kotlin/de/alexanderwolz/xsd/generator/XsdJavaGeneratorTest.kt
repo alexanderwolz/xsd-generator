@@ -6,40 +6,18 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
+import kotlin.test.assertEquals
 
-class XsdJavaGeneratorTest {
-
-    private val schemaDir = File("schemas")
-    private val outputParent = File("build/generated")
-    private val outputDir = File(outputParent, "/sources/xjc/main/java")
-    private val generator = XsdJavaGenerator(outputDir)
-
-    private val defaultPackage = "generated"
-
-    @BeforeEach
-    fun before() {
-        outputDir.deleteRecursively()
-    }
-
-    @AfterEach
-    fun after() {
-        outputParent.deleteRecursively()
-    }
-
-    private fun testIfExists(parent: File, fileNames: Collection<String>) {
-        fileNames.forEach {
-            val generatedFile = File(parent, it)
-            assertTrue { generatedFile.exists() }
-        }
-    }
+class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
 
     @Test
     fun testSchemaFolder() {
         assertTrue { schemaDir.exists() }
         assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
-        assertTrue { schemaDir.listFiles{it.name.endsWith("xjb.xml")}?.size == 3 }
-        assertTrue { schemaDir.listFiles{it.extension == "xsd"}?.size == 8 }
+        assertTrue { schemaDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
+        assertTrue { schemaDir.listFiles { it.extension == "xsd" }?.size == 8 }
     }
 
     @Test
@@ -379,6 +357,23 @@ class XsdJavaGeneratorTest {
         val flags = null
         val packageName = null
         generator.generate(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
+    }
+
+
+    @Test
+    fun testGenerateStringReferences() {
+        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
+        testIfExists(
+            outputDir, listOf(
+                "de/alexanderwolz/model/complex/v6/Complex.java",
+                "de/alexanderwolz/model/article/v3/Article.java",
+                "de/alexanderwolz/model/article/v3/ArticleList.java",
+                "de/alexanderwolz/model/article/v3/Category.java",
+                "de/alexanderwolz/model/article/v3/Status.java",
+                "de/alexanderwolz/model/author/v2/Author.java",
+                "de/alexanderwolz/model/role/v6/Role.java"
+            )
+        )
     }
 
 
