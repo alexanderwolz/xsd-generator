@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+@Suppress("DEPRECATION")
 class XsdJavaGeneratorTaskTest : AbstractJavaGeneratorTest() {
 
     @Test

@@ -39,8 +39,8 @@ class XjcJavaGenerator(
         //TODO recursively
         val allReferences = references
         val dependencies = allReferences.map { File(schemaFolder, it.schemaLocation) }
-
         println(logger.level)
+        logger.info { "hello" }
         dependencies.forEach {
             logger.info { it.absolutePath }
          }

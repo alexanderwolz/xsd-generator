@@ -37,13 +37,6 @@ class XjcJavaGenerator(
         val schemaFile = File(schemaFolder, schema)
         val references = parseXsdReferences(schemaFile)
         //TODO recursively
-        val allReferences = references
-        val dependencies = allReferences.map { File(schemaFolder, it.schemaLocation) }
-
-        println(logger.level)
-        dependencies.forEach {
-            logger.info { it.absolutePath }
-         }
         return false
     }
 

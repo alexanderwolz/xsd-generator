@@ -129,6 +129,11 @@ tasks.compileTestKotlin {
 tasks.test {
     useJUnitPlatform()
 
+    testLogging {
+        showStandardStreams = true
+        events("passed", "skipped", "failed", "standardOut", "standardError")
+    }
+
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
