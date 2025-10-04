@@ -10,27 +10,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import kotlin.test.assertEquals
 
-class XsdJavaGeneratorTest {
-
-    private val schemaDir = File("schemas")
-    private lateinit var generator: XsdJavaGenerator
-
-    private val defaultPackage = "generated"
-
-    @TempDir
-    private lateinit var outputDir: File
-
-    @BeforeEach
-    fun before() {
-        generator = XsdJavaGenerator(outputDir)
-    }
-
-    private fun testIfExists(parent: File, fileNames: Collection<String>) {
-        fileNames.forEach {
-            val generatedFile = File(parent, it)
-            assertTrue { generatedFile.exists() }
-        }
-    }
+class XsdJavaGeneratorTest: AbstractJavaGeneratorTest() {
 
     @Test
     fun testSchemaFolder() {

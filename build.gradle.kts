@@ -57,6 +57,7 @@ dependencies {
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
+    testImplementation(gradleTestKit())
     testImplementation("org.slf4j:slf4j-simple:2.0.17")
     testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     testImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
@@ -113,9 +114,18 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
-        generator.generate("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaFolder)
+        generate("complexParent_v6.xsd", "articleListCollection_v3.xsd")
     }
+}
+
+private fun generate(schema: String, vararg dependencies: String) {
+    val generator = XsdJavaGenerator(xjcGenDir, encoding = Charsets.UTF_8)
+    generator.generate(
+        schema,
+        dependencies.toList(),
+        schemaFolder = schemaFolder,
+        flags = Flags.values().toList()
+    )
 }
 
 tasks.compileTestKotlin {
@@ -124,6 +134,12 @@ tasks.compileTestKotlin {
 
 tasks.test {
     useJUnitPlatform()
+
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
 }
 
 tasks.jar {
