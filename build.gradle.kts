@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.4.0"
+version = "1.5.0"
 
 repositories {
     mavenCentral()
@@ -33,7 +33,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-util:1.4.3")
+    implementation("de.alexanderwolz:commons-util:1.4.6")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
@@ -48,6 +48,7 @@ dependencies {
 
 val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java").get().asFile
 val schemaFolder = layout.projectDirectory.dir("schemas").asFile
+val customLogger = de.alexanderwolz.commons.log.Logger(logger) { println(it.message) }
 
 sourceSets {
     test {
@@ -75,7 +76,7 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -91,16 +92,17 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
+        logger.lifecycle("Executing \"generateJaxbSimple\"")
         generate("complexParent_v6.xsd", "articleListCollection_v3.xsd")
     }
 }
 
 private fun generate(schema: String, vararg dependencies: String) {
-    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
+    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
     generator.generateWithDependencies(
         schema,
         dependencies.toList(),
-        schemaFolder = schemaFolder,
+        schemaFolder = File(schemaFolder,"backup"),
         flags = Flags.values().toList()
     )
 }

@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-util:1.4.3")
+    implementation("de.alexanderwolz:commons-util:1.4.6")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     runtimeOnly("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     runtimeOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode

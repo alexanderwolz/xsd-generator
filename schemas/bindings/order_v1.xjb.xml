@@ -1,0 +1,14 @@
+<jaxb:bindings
+        xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        jaxb:version="3.0">
+
+    <jaxb:bindings schemaLocation="../order_v1.xsd" node="/xsd:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="de.alexanderwolz.generated.v1"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>
+
+
