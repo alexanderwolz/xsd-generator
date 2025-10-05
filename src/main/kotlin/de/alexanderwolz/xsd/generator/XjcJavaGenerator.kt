@@ -35,6 +35,15 @@ class XjcJavaGenerator(
         val schemaFile = File(schemaFolder, schema)
         val allReferences = XsdUtils.getAllReferencedXsdSchemaFiles(schemaFile, schemaFolder)
 
+        logger.info { "Generating schema ${schemaFile.name} with auto resolve .." }
+        logger.trace { "Schema folder: $schemaFolder" }
+        logger.trace { "Binding folder: $bindingFolder" }
+        logger.trace { "Output folder: $outputDir" }
+        logger.trace { "Filename Versions: $useFilenameVersions" }
+        logger.trace { "Catalog: $catalog" }
+        logger.trace { "flags: ${flags?.joinToString()}" }
+        logger.trace { "packageName: $packageName" }
+
         val parent = allReferences.find { it.file == schemaFile }
         if (parent == null) {
             //should never happen
@@ -48,9 +57,9 @@ class XjcJavaGenerator(
         return true
     }
 
-    fun logTree(reference: XsdFileReference, logger: Logger) {
+    fun logTree(parent: XsdFileReference, logger: Logger) {
         logger.debug { "Found references:" }
-        RecursionUtils.traverseTopDown(reference) { reference ->
+        RecursionUtils.traverseTopDown(parent) { reference ->
             val depth = RecursionUtils.getDepth(reference)
             val indent = "  ".repeat(depth)
             logger.debug { "$indent${reference.schemaLocation} -> ${reference.file.parent}/${reference.file.name}" }
@@ -58,7 +67,7 @@ class XjcJavaGenerator(
     }
 
     fun buildRecursive(
-        reference: XsdFileReference,
+        parent: XsdFileReference,
         bindingFolder: File?,
         bindingExtension: String,
         packageName: String?,
@@ -66,8 +75,8 @@ class XjcJavaGenerator(
         catalog: File?,
         flags: Collection<Flags>?
     ) {
-        logger.debug { "Building ${reference.schemaLocation}" }
-        RecursionUtils.traverseBottomUp(reference) { reference ->
+        logger.debug { "Building ${parent.schemaLocation}" }
+        RecursionUtils.traverseBottomUp(parent) { reference ->
             if (reference.type == XsdReference.Type.INCLUDE) {
                 logger.warn { "Ignoring ${reference.schemaLocation}, because it is included by ${reference.parent?.schemaLocation}" }
             } else {

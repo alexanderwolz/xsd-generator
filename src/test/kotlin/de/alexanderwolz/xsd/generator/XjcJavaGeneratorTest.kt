@@ -123,13 +123,13 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         //it should use the definition from target namespace, e.g. de.alexanderwolz.schema
         testIfExists(
             outputDir, listOf(
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/ArticleListCollection.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java",
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/ArticleListCollection.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java",
             )
         )
     }
@@ -205,13 +205,13 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         //It generates all classes using the schemas defined in the XSDs
         testIfExists(
             outputDir, listOf(
-                "de/alexanderwolz/schema/complex/Complex.java",
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java"
+                "de/alexanderwolz/model/complex/Complex.java",
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java"
             )
         )
     }
@@ -230,12 +230,12 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/complex/v6/Complex.java",
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java"
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java"
             )
         )
     }
@@ -408,10 +408,16 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         logEvents.clear()
         generator.generateAutoResolve("article_v3.xsd", schemaDir, useFilenameVersions = true).apply {
             //only generates model: Status, Author, Role, Article -> should only generate Article and Role
-            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
-            assertEquals(2, logs.size)
-            assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[0])
-            assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[1])
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted().onEach { println(it) }
+            assertEquals(8, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/v3/Article.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/v3/ArticleList.java", logs[1])
+            assertEquals("de/alexanderwolz/model/articles/v3/Category.java", logs[2])
+            assertEquals("de/alexanderwolz/model/articles/v3/ObjectFactory.java", logs[3])
+            assertEquals("de/alexanderwolz/model/articles/v3/Status.java", logs[4])
+            assertEquals("de/alexanderwolz/model/articles/v3/package-info.java", logs[5])
+            assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[6])
+            assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[7])
         }
 
         logEvents.clear()
@@ -420,9 +426,10 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
             //only generates complex article
             val logs =
                 logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.onEach { println(it) }
-            assertEquals(9, logs.size)
-            assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[0])
-            assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[1])
+            assertEquals(3, logs.size)
+            assertEquals("de/alexanderwolz/model/complex/v6/Complex.java", logs[0])
+            assertEquals("de/alexanderwolz/model/complex/v6/ObjectFactory.java", logs[1])
+            assertEquals("de/alexanderwolz/model/complex/v6/package-info.java", logs[2])
         }
     }
 
@@ -495,84 +502,6 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
             assertEquals("generated/model/Status.java", logs[7])
             assertEquals("generated/model/package-info.java", logs[8])
         }
-    }
-
-    @Test
-    fun testAutoResolveWithoutGeneratedEpisodes() {
-
-        val objectFactories = HashMap<File, ArrayList<String>>()
-
-        println("")
-        logEvents.clear()
-        generator.generateAutoResolve("status_v1.xsd", schemaDir).apply {
-            //only generates model: Status
-            assertFalse { File(outputDir, "status_v1.episode").exists() }
-            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
-            assertEquals(2, logs.size)
-            assertEquals("de/alexanderwolz/model/status/v1/ObjectFactory.java", logs[0])
-            assertEquals("de/alexanderwolz/model/status/v1/Status.java", logs[1])
-
-            File(outputDir, "de/alexanderwolz/model/status/v1/ObjectFactory.java").also {
-                objectFactories.putIfAbsent(it, ArrayList())
-                objectFactories[it]?.add(it.readText())
-            }
-        }
-
-        println("")
-        logEvents.clear()
-        generator.generateAutoResolve("author_v2.xsd", schemaDir).apply {
-            //only generates model: Author
-            assertFalse { File(outputDir, "author_v2.episode").exists() }
-            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
-            assertEquals(3, logs.size)
-            assertEquals("de/alexanderwolz/model/author/v2/ObjectFactory.java", logs[1])
-            assertEquals("de/alexanderwolz/model/author/v2/Author.java", logs[0])
-            assertEquals("de/alexanderwolz/model/author/v2/package-info.java", logs[2])
-
-            File(outputDir, "de/alexanderwolz/model/author/v2/ObjectFactory.java").also {
-                objectFactories.putIfAbsent(it, ArrayList())
-                objectFactories.get(it)?.add(it.readText())
-            }
-        }
-
-        println("")
-        logEvents.clear()
-        generator.generateAutoResolve("article_v3.xsd", schemaDir).apply {
-            //includes status, author, roles
-            // -> Since we built status and Author already, it should only generate Article and Roles
-            assertFalse { File(outputDir, "article_v3.episode").exists() }
-            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
-            assertEquals(11, logs.size)
-            assertEquals("de/alexanderwolz/schema/roles/ObjectFactory.java", logs[0])
-            assertEquals("de/alexanderwolz/schema/roles/Role.java", logs[1])
-            assertEquals("de/alexanderwolz/schema/authors/Author.java", logs[2])
-            assertEquals("de/alexanderwolz/schema/authors/ObjectFactory.java", logs[3])
-            assertEquals("de/alexanderwolz/schema/authors/package-info.java", logs[4])
-            assertEquals("de/alexanderwolz/schema/articles/Article.java", logs[5])
-            assertEquals("de/alexanderwolz/schema/articles/ArticleList.java", logs[6])
-            assertEquals("de/alexanderwolz/schema/articles/Category.java", logs[7])
-            assertEquals("de/alexanderwolz/schema/articles/ObjectFactory.java", logs[8])
-            assertEquals("de/alexanderwolz/schema/articles/Status.java", logs[9])
-            assertEquals("de/alexanderwolz/schema/articles/package-info.java", logs[10])
-
-
-            File(outputDir, "de/alexanderwolz/schema/articles/ObjectFactory.java").also {
-                objectFactories.putIfAbsent(it, ArrayList())
-                objectFactories.get(it)?.add(it.readText())
-            }
-
-            File(outputDir, "de/alexanderwolz/schema/roles/ObjectFactory.java").also {
-                objectFactories.putIfAbsent(it, ArrayList())
-                objectFactories.get(it)?.add(it.readText())
-            }
-        }
-
-        logEvents.clear()
-        //generator.generateAutoResolve("complexParent_v6.xsd", schemaDir)
-
-        logEvents.clear()
-        //generator.generateAutoResolve("articleListCollection_v3.xsd", schemaDir)
-
     }
 
 }

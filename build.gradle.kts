@@ -2,6 +2,7 @@ import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 import java.util.*
+import kotlin.collections.toList
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -58,10 +59,25 @@ sourceSets {
     }
 }
 
+val generateJaxb = tasks.register("generateJaxb") {
+    group = "generation"
+    description = "Generates Java classes from XSD schemas"
+    doLast {
+        logger.lifecycle("Executing \"generateJaxb\"")
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
+        generator.generateAutoResolve(
+            "complexParent_v6.xsd",
+            schemaFolder,
+            useFilenameVersions = true,
+            flags = Flags.values().toList()
+        )
+    }
+}
+
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 //TODO fix this: GitHub Runner complains about unknown definition
 //  src-resolve: Cannot resolve the name 'articles:article' to a(n) 'type definition' component.
-val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
+val generateJaxbTask = tasks.register<XsdJavaGeneratorTask>("generateJaxbTask") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
     bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
@@ -102,13 +118,13 @@ private fun generate(schema: String, vararg dependencies: String) {
     generator.generateWithDependencies(
         schema,
         dependencies.toList(),
-        schemaFolder = File(schemaFolder,"backup"),
+        schemaFolder = File(schemaFolder, "backup"),
         flags = Flags.values().toList()
     )
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxbSimple)
+    dependsOn(generateJaxb)
 }
 
 tasks.test {

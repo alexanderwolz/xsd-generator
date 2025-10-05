@@ -1,11 +1,11 @@
 package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.commons.log.Logger
-import de.alexanderwolz.model.article.v3.Article
-import de.alexanderwolz.model.article.v3.ObjectFactory
-import de.alexanderwolz.model.article.v3.Status
-import de.alexanderwolz.model.author.v2.Author
-import de.alexanderwolz.model.role.v6.Role
+import de.alexanderwolz.model.articles.v3.Article
+import de.alexanderwolz.model.articles.v3.ObjectFactory
+import de.alexanderwolz.model.articles.v3.Status
+import de.alexanderwolz.model.authors.v2.Author
+import de.alexanderwolz.model.roles.v6.Role
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBElement
 import java.io.StringWriter

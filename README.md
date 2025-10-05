@@ -33,6 +33,7 @@ with Maven
 
 ## 🪄 Example
 
+Simple schema file generation 
 ```kotlin
 val generator = XsdJavaGenerator("build/generated/xjc")
 val schema = File(schemaDir, "articleListCollection_v3.xsd")
@@ -43,6 +44,16 @@ val createEpisode = true
 val flags = Flags.DEFAULTS
 val packageName = "com.domain.generated"
 generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
+```
+Recursive auto resolving of nested schema files
+```kotlin
+val generator = XsdJavaGenerator.create(xjcGenDir, Charsets.UTF_8, customLogger)
+generator.generateAutoResolve(
+    "complexParent_v6.xsd",
+    schemaFolder,
+    useFilenameVersions = true,
+    flags = Flags.values().toList()
+)
 ```
 
 - - -
