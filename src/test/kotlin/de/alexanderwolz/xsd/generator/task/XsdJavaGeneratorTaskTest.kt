@@ -41,13 +41,13 @@ class XsdJavaGeneratorTaskTest : AbstractJavaGeneratorTest() {
         }.toList()
 
         val expectedFiles = listOf(
-            "de/alexanderwolz/schema/articles/Article.java",
-            "de/alexanderwolz/schema/articles/ArticleList.java",
-            "de/alexanderwolz/schema/articles/ArticleListCollection.java",
-            "de/alexanderwolz/schema/articles/Category.java",
-            "de/alexanderwolz/schema/articles/Status.java",
-            "de/alexanderwolz/schema/authors/Author.java",
-            "de/alexanderwolz/schema/roles/Role.java",
+            "de/alexanderwolz/model/articles/Article.java",
+            "de/alexanderwolz/model/articles/ArticleList.java",
+            "de/alexanderwolz/model/articles/ArticleListCollection.java",
+            "de/alexanderwolz/model/articles/Category.java",
+            "de/alexanderwolz/model/articles/Status.java",
+            "de/alexanderwolz/model/authors/Author.java",
+            "de/alexanderwolz/model/roles/Role.java",
         )
         assertEquals(expectedFiles.size, generatedFiles.size)
         testIfExists(outputDir, expectedFiles)

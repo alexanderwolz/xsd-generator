@@ -2,6 +2,7 @@ import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 import java.util.*
+import kotlin.collections.toList
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -13,7 +14,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.4.0"
+version = "1.5.0"
 
 repositories {
     mavenCentral()
@@ -33,7 +34,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-util:1.4.3")
+    implementation("de.alexanderwolz:commons-util:1.4.6")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
@@ -48,6 +49,7 @@ dependencies {
 
 val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java").get().asFile
 val schemaFolder = layout.projectDirectory.dir("schemas").asFile
+val customLogger = de.alexanderwolz.commons.log.Logger(logger) { println(it.message) }
 
 sourceSets {
     test {
@@ -57,10 +59,25 @@ sourceSets {
     }
 }
 
+val generateJaxb = tasks.register("generateJaxb") {
+    group = "generation"
+    description = "Generates Java classes from XSD schemas"
+    doLast {
+        logger.lifecycle("Executing \"generateJaxb\"")
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
+        generator.generateAutoResolve(
+            "complexParent_v6.xsd",
+            schemaFolder,
+            useFilenameVersions = true,
+            flags = Flags.values().toList()
+        )
+    }
+}
+
 //INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 //TODO fix this: GitHub Runner complains about unknown definition
 //  src-resolve: Cannot resolve the name 'articles:article' to a(n) 'type definition' component.
-val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
+val generateJaxbTask = tasks.register<XsdJavaGeneratorTask>("generateJaxbTask") {
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("*.xsd") }.files
     bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
@@ -75,7 +92,7 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -91,22 +108,23 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
+        logger.lifecycle("Executing \"generateJaxbSimple\"")
         generate("complexParent_v6.xsd", "articleListCollection_v3.xsd")
     }
 }
 
 private fun generate(schema: String, vararg dependencies: String) {
-    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
+    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, customLogger)
     generator.generateWithDependencies(
         schema,
         dependencies.toList(),
-        schemaFolder = schemaFolder,
+        schemaFolder = File(schemaFolder, "backup"),
         flags = Flags.values().toList()
     )
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxbSimple)
+    dependsOn(generateJaxb)
 }
 
 tasks.test {

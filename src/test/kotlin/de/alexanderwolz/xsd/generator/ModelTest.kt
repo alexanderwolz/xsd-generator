@@ -1,11 +1,11 @@
 package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.commons.log.Logger
-import de.alexanderwolz.model.article.v3.Article
-import de.alexanderwolz.model.article.v3.ObjectFactory
-import de.alexanderwolz.model.article.v3.Status
-import de.alexanderwolz.model.author.v2.Author
-import de.alexanderwolz.model.role.v6.Role
+import de.alexanderwolz.model.articles.v3.Article
+import de.alexanderwolz.model.articles.v3.ObjectFactory
+import de.alexanderwolz.model.articles.v3.Status
+import de.alexanderwolz.model.authors.v2.Author
+import de.alexanderwolz.model.roles.v6.Role
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBElement
 import java.io.StringWriter
@@ -51,7 +51,7 @@ class ModelTest() {
     }
 
     private val articleXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<ns3:article xmlns=\"http://www.alexanderwolz.de/schema/articles\" xmlns:ns2=\"http://www.alexanderwolz.de/schema/authors\" xmlns:ns3=\"http://alexanderwolz.de/model/article/v3\">\n" +
+            "<ns3:article xmlns=\"http://www.alexanderwolz.de/model/articles\" xmlns:ns2=\"http://www.alexanderwolz.de/model/authors\" xmlns:ns3=\"http://alexanderwolz.de/model/article/v3\">\n" +
             "    <id>1</id>\n" +
             "    <ns2:author>\n" +
             "        <ns2:id>1</ns2:id>\n" +

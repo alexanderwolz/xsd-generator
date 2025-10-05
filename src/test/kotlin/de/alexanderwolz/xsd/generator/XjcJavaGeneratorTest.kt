@@ -1,19 +1,21 @@
-package de.alexanderwolz.xsd.generator.instance
+package de.alexanderwolz.xsd.generator
 
-import de.alexanderwolz.xsd.generator.AbstractJavaGeneratorTest
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
+class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
 
     @Test
     fun testSchemaFolder() {
         Assertions.assertTrue { schemaDir.exists() }
         Assertions.assertTrue { schemaDir.listFiles()?.isNotEmpty() ?: false }
-        Assertions.assertTrue { schemaDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
+        Assertions.assertTrue { bindingsDir.listFiles { it.name.endsWith("xjb.xml") }?.size == 3 }
         Assertions.assertTrue { schemaDir.listFiles { it.extension == "xsd" }?.size == 8 }
     }
 
@@ -80,7 +82,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateSimpleWithBinding() {
         val schema = File(schemaDir, "order_v1.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
@@ -93,7 +95,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateSimpleWithBindingAndEpisodeCreation() {
         val schema = File(schemaDir, "order_v1.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
@@ -121,13 +123,13 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
         //it should use the definition from target namespace, e.g. de.alexanderwolz.schema
         testIfExists(
             outputDir, listOf(
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/ArticleListCollection.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java",
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/ArticleListCollection.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java",
             )
         )
     }
@@ -135,7 +137,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateNestedWithBinding() {
         val schema = File(schemaDir, "articleListCollection_v3.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
@@ -158,7 +160,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateNestedWithBindingAndEpisodeCreation() {
         val schema = File(schemaDir, "articleListCollection_v3.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = true
@@ -203,13 +205,13 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
         //It generates all classes using the schemas defined in the XSDs
         testIfExists(
             outputDir, listOf(
-                "de/alexanderwolz/schema/complex/Complex.java",
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java"
+                "de/alexanderwolz/model/complex/Complex.java",
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java"
             )
         )
     }
@@ -217,7 +219,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateComplexWithBinding() {
         val schema = File(schemaDir, "complexParent_v6.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
@@ -228,12 +230,12 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/complex/v6/Complex.java",
-                "de/alexanderwolz/schema/articles/Article.java",
-                "de/alexanderwolz/schema/articles/ArticleList.java",
-                "de/alexanderwolz/schema/articles/Category.java",
-                "de/alexanderwolz/schema/articles/Status.java",
-                "de/alexanderwolz/schema/authors/Author.java",
-                "de/alexanderwolz/schema/roles/Role.java"
+                "de/alexanderwolz/model/articles/Article.java",
+                "de/alexanderwolz/model/articles/ArticleList.java",
+                "de/alexanderwolz/model/articles/Category.java",
+                "de/alexanderwolz/model/articles/Status.java",
+                "de/alexanderwolz/model/authors/Author.java",
+                "de/alexanderwolz/model/roles/Role.java"
             )
         )
     }
@@ -242,8 +244,8 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     fun testGenerateComplexWithDependencyBindingFails() {
         val schema = File(schemaDir, "complexParent_v6.xsd")
         val bindings = listOf(
-            File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"),
-            File(schemaDir, "articleListCollection_v3.xjb.xml")
+            File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"),
+            File(bindingsDir, "articleListCollection_v3.xjb.xml")
         )
         val episodes = emptyList<File>()
         val catalog = null
@@ -262,7 +264,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
             File(schemaDir, "complexParent_v6.xsd"),
             File(schemaDir, "articleListCollection_v3.xsd")
         )
-        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }
+        val bindings = schemas.map { File(bindingsDir, "${it.nameWithoutExtension}.xjb.xml") }
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
@@ -289,7 +291,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
             File(schemaDir, "complexParent_v6.xsd"),
             File(schemaDir, "articleListCollection_v3.xsd")
         )
-        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }
+        val bindings = schemas.map { File(bindingsDir, "${it.nameWithoutExtension}.xjb.xml") }
         val episodes = emptyList<File>()
         val catalog = null
         val createEpisode = false
@@ -313,7 +315,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateComplexWithNonExistingEpisodesFails() {
         val schema = File(schemaDir, "complexParent_v6.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = listOf(File(outputDir, "articleListCollection_v3.episode"))
         val catalog = null
         val createEpisode = false
@@ -332,7 +334,7 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
         testGenerateNestedWithBindingAndEpisodeCreation()
 
         val schema = File(schemaDir, "complexParent_v6.xsd")
-        val bindings = listOf(File(schemaDir, "${schema.nameWithoutExtension}.xjb.xml"))
+        val bindings = listOf(File(bindingsDir, "${schema.nameWithoutExtension}.xjb.xml"))
         val episodes = listOf(File(outputDir, "articleListCollection_v3.episode"))
         val catalog = null
         val createEpisode = false
@@ -345,9 +347,9 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testGenerateWithDependencies() {
         val schemas = listOf(File(schemaDir, "complexParent_v6.xsd"))
-        val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
+        val bindings = schemas.map { File(bindingsDir, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val dependencySchema = File(schemaDir, "articleListCollection_v3.xsd")
-        val dependencyBinding = File(dependencySchema.parent, "${dependencySchema.nameWithoutExtension}.xjb.xml")
+        val dependencyBinding = File(bindingsDir, "${dependencySchema.nameWithoutExtension}.xjb.xml")
         val dependencies = mapOf(dependencySchema to listOf(dependencyBinding))
         val catalog = null
         val createEpisode = false
@@ -359,7 +361,12 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
 
     @Test
     fun testGenerateStringReferences() {
-        generator.generateWithDependencies("complexParent_v6.xsd", listOf("articleListCollection_v3.xsd"), schemaDir)
+        generator.generateWithDependencies(
+            "complexParent_v6.xsd",
+            listOf("articleListCollection_v3.xsd"),
+            schemaDir,
+            bindingsDir
+        )
         testIfExists(
             outputDir, listOf(
                 "de/alexanderwolz/model/complex/v6/Complex.java",
@@ -374,10 +381,127 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     }
 
     @Test
-    fun testAutoResolve(){
-        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir)
-        generator.generateAutoResolve("articleListCollection_v3.xsd", schemaDir)
-        generator.generateAutoResolve("article_v3.xsd", schemaDir)
+    fun testAutoResolveWithVersionFromFilename() {
+
+        logEvents.clear()
+        generator.generateAutoResolve("status_v1.xsd", schemaDir, useFilenameVersions = true).apply {
+            //only generates model: Status
+            assertTrue { File(outputDir, "status_v1.episode").exists() }
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
+            assertEquals(2, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/v1/ObjectFactory.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/v1/Status.java", logs[1])
+        }
+
+        logEvents.clear()
+        generator.generateAutoResolve("author_v2.xsd", schemaDir, useFilenameVersions = true).apply {
+            //only generates model: Author
+            assertTrue { File(outputDir, "status_v1.episode").exists() }
+            assertTrue { File(outputDir, "author_v2.episode").exists() }
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
+            assertEquals(3, logs.size)
+            assertEquals("de/alexanderwolz/model/authors/v2/ObjectFactory.java", logs[1])
+            assertEquals("de/alexanderwolz/model/authors/v2/Author.java", logs[0])
+            assertEquals("de/alexanderwolz/model/authors/v2/package-info.java", logs[2])
+        }
+
+        logEvents.clear()
+        generator.generateAutoResolve("article_v3.xsd", schemaDir, useFilenameVersions = true).apply {
+            //only generates model: Status, Author, Role, Article -> should only generate Article and Role
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted().onEach { println(it) }
+            assertEquals(8, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/v3/Article.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/v3/ArticleList.java", logs[1])
+            assertEquals("de/alexanderwolz/model/articles/v3/Category.java", logs[2])
+            assertEquals("de/alexanderwolz/model/articles/v3/ObjectFactory.java", logs[3])
+            assertEquals("de/alexanderwolz/model/articles/v3/Status.java", logs[4])
+            assertEquals("de/alexanderwolz/model/articles/v3/package-info.java", logs[5])
+            assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[6])
+            assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[7])
+        }
+
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, useFilenameVersions = true).apply {
+            //only generates complex article
+            val logs =
+                logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.onEach { println(it) }
+            assertEquals(3, logs.size)
+            assertEquals("de/alexanderwolz/model/complex/v6/Complex.java", logs[0])
+            assertEquals("de/alexanderwolz/model/complex/v6/ObjectFactory.java", logs[1])
+            assertEquals("de/alexanderwolz/model/complex/v6/package-info.java", logs[2])
+        }
+    }
+
+    @Test
+    fun testAutoResolveComplexParentWithFileNameVersion() {
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, useFilenameVersions = true).apply {
+            //only generates complex article
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted()
+            assertEquals(14, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/v3/Article.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/v3/ArticleList.java", logs[1])
+            assertEquals("de/alexanderwolz/model/articles/v3/Category.java", logs[2])
+            assertEquals("de/alexanderwolz/model/articles/v3/ObjectFactory.java", logs[3])
+            assertEquals("de/alexanderwolz/model/articles/v3/Status.java", logs[4])
+            assertEquals("de/alexanderwolz/model/articles/v3/package-info.java", logs[5])
+            assertEquals("de/alexanderwolz/model/authors/v2/Author.java", logs[6])
+            assertEquals("de/alexanderwolz/model/authors/v2/ObjectFactory.java", logs[7])
+            assertEquals("de/alexanderwolz/model/authors/v2/package-info.java", logs[8])
+            assertEquals("de/alexanderwolz/model/complex/v6/Complex.java", logs[9])
+            assertEquals("de/alexanderwolz/model/complex/v6/ObjectFactory.java", logs[10])
+            assertEquals("de/alexanderwolz/model/complex/v6/package-info.java", logs[11])
+            assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[12])
+            assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[13])
+        }
+    }
+
+    @Test
+    fun testAutoResolveComplexParentNamespace() {
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir).apply {
+            //only generates complex article
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted()
+            assertEquals(14, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/Article.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/ArticleList.java", logs[1])
+            assertEquals("de/alexanderwolz/model/articles/Category.java", logs[2])
+            assertEquals("de/alexanderwolz/model/articles/ObjectFactory.java", logs[3])
+            assertEquals("de/alexanderwolz/model/articles/Status.java", logs[4])
+            assertEquals("de/alexanderwolz/model/articles/package-info.java", logs[5])
+            assertEquals("de/alexanderwolz/model/authors/Author.java", logs[6])
+            assertEquals("de/alexanderwolz/model/authors/ObjectFactory.java", logs[7])
+            assertEquals("de/alexanderwolz/model/authors/package-info.java", logs[8])
+            assertEquals("de/alexanderwolz/model/complex/Complex.java", logs[9])
+            assertEquals("de/alexanderwolz/model/complex/ObjectFactory.java", logs[10])
+            assertEquals("de/alexanderwolz/model/complex/package-info.java", logs[11])
+            assertEquals("de/alexanderwolz/model/roles/ObjectFactory.java", logs[12])
+            assertEquals("de/alexanderwolz/model/roles/Role.java", logs[13])
+        }
+    }
+
+    @Test
+    fun testAutoResolveComplexParentCustomPackageName() {
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        val packageName = "generated.model"
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, packageName = packageName).apply {
+            //only generates complex article
+            val logs = logEvents.map { it.message }.filter { it.startsWith("generated/") }.distinct().sorted()
+            assertEquals(9, logs.size)
+            assertEquals("generated/model/Article.java", logs[0])
+            assertEquals("generated/model/ArticleList.java", logs[1])
+            assertEquals("generated/model/Author.java", logs[2])
+            assertEquals("generated/model/Category.java", logs[3])
+            assertEquals("generated/model/Complex.java", logs[4])
+            assertEquals("generated/model/ObjectFactory.java", logs[5])
+            assertEquals("generated/model/Role.java", logs[6])
+            assertEquals("generated/model/Status.java", logs[7])
+            assertEquals("generated/model/package-info.java", logs[8])
+        }
     }
 
 }

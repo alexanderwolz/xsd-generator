@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="qualified"
            elementFormDefault="qualified"
-           targetNamespace="http://www.alexanderwolz.de/schema/complex"
-           xmlns:articles="http://www.alexanderwolz.de/schema/articles"
+           targetNamespace="http://www.alexanderwolz.de/model/complex"
+           xmlns:articles="http://www.alexanderwolz.de/model/articles"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:import namespace="http://www.alexanderwolz.de/schema/articles" schemaLocation="article_v3.xsd"/>
+    <xs:import namespace="http://www.alexanderwolz.de/model/articles" schemaLocation="article_v3.xsd"/>
     <xs:complexType name="complex">
         <xs:sequence>
             <xs:element maxOccurs="5" name="article" type="articles:article"/>

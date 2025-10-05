@@ -1,14 +1,23 @@
 package de.alexanderwolz.xsd.generator
 
-import de.alexanderwolz.xsd.generator.instance.XjcJavaGenerator
-import org.slf4j.Logger
+import de.alexanderwolz.commons.log.Logger
+import de.alexanderwolz.xsd.generator.XjcJavaGenerator
 import java.io.File
 import java.nio.charset.Charset
 
 interface XsdJavaGenerator {
 
     companion object {
-        fun create(outputDir: File, encoding: Charset = Charsets.UTF_8, logger: Logger? = null): XsdJavaGenerator {
+
+        fun create(
+            outputDir: File,
+            encoding: Charset = Charsets.UTF_8,
+            logger: org.slf4j.Logger? = null
+        ): XsdJavaGenerator {
+            return XjcJavaGenerator(outputDir, encoding, logger)
+        }
+
+        fun create(outputDir: File, encoding: Charset = Charsets.UTF_8, logger: Logger): XsdJavaGenerator {
             return XjcJavaGenerator(outputDir, encoding, logger)
         }
     }
@@ -18,8 +27,8 @@ interface XsdJavaGenerator {
         schemaFolder: File?,
         bindingFolder: File? = schemaFolder,
         bindingExtension: String = ".xjb.xml",
+        useFilenameVersions: Boolean = false,
         catalog: File? = null,
-        createEpisode: Boolean = false,
         flags: List<Flags>? = null,
         packageName: String? = null
     ): Boolean

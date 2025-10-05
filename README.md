@@ -20,19 +20,20 @@ You can pull the latest binaries from the central Maven repositories:
 
 with Gradle
 ```kotlin
-implementation("de.alexanderwolz:xsd-generator-client:1.4.0")
+implementation("de.alexanderwolz:xsd-generator-client:1.5.0")
 ```
 with Maven
 ```xml
 <dependency>
   <groupId>de.alexanderwolz</groupId>
   <artifactId>xsd-generator</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
 ## 🪄 Example
 
+Simple schema file generation 
 ```kotlin
 val generator = XsdJavaGenerator("build/generated/xjc")
 val schema = File(schemaDir, "articleListCollection_v3.xsd")
@@ -43,6 +44,16 @@ val createEpisode = true
 val flags = Flags.DEFAULTS
 val packageName = "com.domain.generated"
 generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
+```
+Recursive auto resolving of nested schema files
+```kotlin
+val generator = XsdJavaGenerator.create(xjcGenDir, Charsets.UTF_8, customLogger)
+generator.generateAutoResolve(
+    "complexParent_v6.xsd",
+    schemaFolder,
+    useFilenameVersions = true,
+    flags = Flags.values().toList()
+)
 ```
 
 - - -

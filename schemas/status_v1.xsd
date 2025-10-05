@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="qualified"
            elementFormDefault="qualified"
-           targetNamespace="http://www.alexanderwolz.de/schema/articles"
+           targetNamespace="http://www.alexanderwolz.de/model/articles"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:simpleType name="status">
         <xs:restriction base="xs:string">
