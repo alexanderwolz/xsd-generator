@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.5.0"
+version = "1.5.1"
 
 repositories {
     mavenCentral()
@@ -172,8 +172,8 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             pom {
-                name.set("HTTP Client")
-                description.set("Sophisticated http client wrapper")
+                name.set("XSD Generator")
+                description.set("Generates Java classes from XML Schema files (XSD) using Kotlin, JaxB and XJC")
                 url.set("https://github.com/alexanderwolz/http-client")
                 licenses {
                     license {
