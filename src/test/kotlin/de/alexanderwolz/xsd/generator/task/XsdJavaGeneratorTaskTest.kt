@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 class XsdJavaGeneratorTaskTest : AbstractJavaGeneratorTest() {
 
     @Test
-    fun testTask() {
+    fun testXsdJavaGeneratorTaskExecution() {
         val project = ProjectBuilder.builder().build()
         val task = project.tasks.create("testXsdJavaGenerator", XsdJavaGeneratorTask::class.java)
 

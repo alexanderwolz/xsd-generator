@@ -1,7 +1,7 @@
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
-import java.util.Base64
+import java.util.*
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -13,11 +13,12 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.3.0"
+version = "1.4.0"
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
+    maven("https://repo1.maven.org/maven2")
 }
 
 java {
@@ -32,21 +33,17 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-log:1.1.0")
-    implementation("de.alexanderwolz:commons-util:1.3.1")
-    implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
-    compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
-    compileOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11")
+    implementation("de.alexanderwolz:commons-util:1.4.3")
+    implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
+    implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
     testImplementation(gradleTestKit())
     testImplementation("org.slf4j:slf4j-simple:2.0.17")
+    testImplementation("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
-    testImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
-    testImplementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
-    testImplementation("org.jvnet.jaxb:jaxb-plugins:4.0.11")
-    testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0") //annotations
 }
 
 val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java").get().asFile
@@ -74,13 +71,11 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     packageName = null
 }
 
-
-//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -92,7 +87,6 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     }
 }
 
-//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
@@ -102,7 +96,7 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
 }
 
 private fun generate(schema: String, vararg dependencies: String) {
-    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
+    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
     generator.generateWithDependencies(
         schema,
         dependencies.toList(),
@@ -111,28 +105,12 @@ private fun generate(schema: String, vararg dependencies: String) {
     )
 }
 
-tasks.clean {
-    doFirst {
-        delete(
-            "buildSrc/build",
-            "buildSrc/.gradle",
-            "build/generated",
-            ".gradle"
-        )
-    }
-}
-
 tasks.compileTestKotlin {
     dependsOn(generateJaxbSimple)
 }
 
 tasks.test {
     useJUnitPlatform()
-
-    testLogging {
-        showStandardStreams = true
-        events("passed", "skipped", "failed", "standardOut", "standardError")
-    }
 
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",

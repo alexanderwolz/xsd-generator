@@ -376,6 +376,8 @@ class XjcJavaGeneratorTest: AbstractJavaGeneratorTest() {
     @Test
     fun testAutoResolve(){
         generator.generateAutoResolve("complexParent_v6.xsd", schemaDir)
+        generator.generateAutoResolve("articleListCollection_v3.xsd", schemaDir)
+        generator.generateAutoResolve("article_v3.xsd", schemaDir)
     }
 
 }
