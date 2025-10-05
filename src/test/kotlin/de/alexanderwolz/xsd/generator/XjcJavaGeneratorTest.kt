@@ -427,15 +427,13 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
     }
 
     @Test
-    fun testAutoResolve() {
+    fun testAutoResolveComplexParentWithFileNameVersion() {
         logEvents.clear()
         listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
         generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, useFilenameVersions = true).apply {
             //only generates complex article
-            val logs =
-                logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted().onEach { println(it) }
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted()
             assertEquals(14, logs.size)
-
             assertEquals("de/alexanderwolz/model/articles/v3/Article.java", logs[0])
             assertEquals("de/alexanderwolz/model/articles/v3/ArticleList.java", logs[1])
             assertEquals("de/alexanderwolz/model/articles/v3/Category.java", logs[2])
@@ -450,7 +448,52 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
             assertEquals("de/alexanderwolz/model/complex/v6/package-info.java", logs[11])
             assertEquals("de/alexanderwolz/model/roles/v6/ObjectFactory.java", logs[12])
             assertEquals("de/alexanderwolz/model/roles/v6/Role.java", logs[13])
+        }
+    }
 
+    @Test
+    fun testAutoResolveComplexParentNamespace() {
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir).apply {
+            //only generates complex article
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted()
+            assertEquals(14, logs.size)
+            assertEquals("de/alexanderwolz/model/articles/Article.java", logs[0])
+            assertEquals("de/alexanderwolz/model/articles/ArticleList.java", logs[1])
+            assertEquals("de/alexanderwolz/model/articles/Category.java", logs[2])
+            assertEquals("de/alexanderwolz/model/articles/ObjectFactory.java", logs[3])
+            assertEquals("de/alexanderwolz/model/articles/Status.java", logs[4])
+            assertEquals("de/alexanderwolz/model/articles/package-info.java", logs[5])
+            assertEquals("de/alexanderwolz/model/authors/Author.java", logs[6])
+            assertEquals("de/alexanderwolz/model/authors/ObjectFactory.java", logs[7])
+            assertEquals("de/alexanderwolz/model/authors/package-info.java", logs[8])
+            assertEquals("de/alexanderwolz/model/complex/Complex.java", logs[9])
+            assertEquals("de/alexanderwolz/model/complex/ObjectFactory.java", logs[10])
+            assertEquals("de/alexanderwolz/model/complex/package-info.java", logs[11])
+            assertEquals("de/alexanderwolz/model/roles/ObjectFactory.java", logs[12])
+            assertEquals("de/alexanderwolz/model/roles/Role.java", logs[13])
+        }
+    }
+
+    @Test
+    fun testAutoResolveComplexParentCustomPackageName() {
+        logEvents.clear()
+        listOf(Flags.EXTENSION, Flags.GENERATE_EQUALS, Flags.GENERATE_TO_STRING, Flags.GENERATE_HASH_CODE)
+        val packageName = "generated.model"
+        generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, packageName = packageName).apply {
+            //only generates complex article
+            val logs = logEvents.map { it.message }.filter { it.startsWith("generated/") }.distinct().sorted()
+            assertEquals(9, logs.size)
+            assertEquals("generated/model/Article.java", logs[0])
+            assertEquals("generated/model/ArticleList.java", logs[1])
+            assertEquals("generated/model/Author.java", logs[2])
+            assertEquals("generated/model/Category.java", logs[3])
+            assertEquals("generated/model/Complex.java", logs[4])
+            assertEquals("generated/model/ObjectFactory.java", logs[5])
+            assertEquals("generated/model/Role.java", logs[6])
+            assertEquals("generated/model/Status.java", logs[7])
+            assertEquals("generated/model/package-info.java", logs[8])
         }
     }
 
