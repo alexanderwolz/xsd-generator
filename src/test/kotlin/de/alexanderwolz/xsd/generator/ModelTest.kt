@@ -19,9 +19,15 @@ class ModelTest() {
     private val logger = Logger(javaClass)
 
     @Test
-    fun testModel() {
+    fun testModelCreationFromXml() {
         val article2 = createArticleFromXmlString(articleXml)
         assertEquals(article, article2)
+    }
+
+    @Test
+    fun testXmlCreationFromModel() {
+        val generatedArticleXml = createArticleXmlString(article)
+        assertEquals(articleXml.replace("\n",""), generatedArticleXml.replace("\n",""))
     }
 
     private fun createArticleFromXmlString(xml: String): Article {
