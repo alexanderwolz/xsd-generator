@@ -2,14 +2,12 @@ package de.alexanderwolz.xsd.generator.instance
 
 import com.sun.tools.xjc.Driver
 import de.alexanderwolz.commons.log.Logger
-import de.alexanderwolz.commons.util.XsdUtils
 import de.alexanderwolz.xsd.generator.Arguments
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
 import de.alexanderwolz.xsd.generator.model.XsdReference
 import org.w3c.dom.Element
-import org.slf4j.Logger as LoggerSLF4J
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -19,10 +17,15 @@ import javax.xml.parsers.DocumentBuilderFactory
 class XjcJavaGenerator(
     val outputDir: File,
     val encoding: Charset = Charsets.UTF_8,
-    logger: LoggerSLF4J? = null
+    val logger: Logger
 ) : XsdJavaGenerator {
 
-    private val logger = logger?.let { Logger(logger) } ?: Logger(javaClass)
+    constructor(
+        outputDir: File,
+        encoding: Charset = Charsets.UTF_8,
+        slf4j: org.slf4j.Logger? = null
+    ) : this(outputDir, encoding, slf4j?.let { Logger(it) } ?: Logger(XjcJavaGenerator::class))
+
 
     override fun generateAutoResolve(
         schema: String,

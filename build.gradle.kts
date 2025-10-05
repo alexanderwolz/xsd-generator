@@ -16,8 +16,8 @@ group = "de.alexanderwolz"
 version = "1.3.0"
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
 }
 
 java {
@@ -32,21 +32,18 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-log:1.1.0")
+    implementation("de.alexanderwolz:commons-log:1.3.0")
     implementation("de.alexanderwolz:commons-util:1.3.1")
-    implementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
-    compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
-    compileOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11")
+    implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
+    implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
 
     testImplementation(kotlin("test"))
     testImplementation(gradleTestKit())
     testImplementation("org.slf4j:slf4j-simple:2.0.17")
+    testImplementation("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
     testImplementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
-    testImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
-    testImplementation("org.glassfish.jaxb:jaxb-xjc:4.0.5")
-    testImplementation("org.jvnet.jaxb:jaxb-plugins:4.0.11")
-    testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
+    testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0") //annotations
 }
 
 val xjcGenDir = layout.buildDirectory.dir("generated/sources/xjc/main/java").get().asFile
@@ -80,7 +77,7 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
     doLast {
-        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
+        val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
         val schemas = fileTree(schemaFolder) { include("*.xsd") }.files
         val bindings = schemas.map { File(it.parent, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
         val episodes = emptyList<File>()
@@ -102,7 +99,7 @@ val generateJaxbSimple = tasks.register("generateJaxbSimple") {
 }
 
 private fun generate(schema: String, vararg dependencies: String) {
-    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8)
+    val generator = XsdJavaGenerator.create(xjcGenDir, encoding = Charsets.UTF_8, logger)
     generator.generateWithDependencies(
         schema,
         dependencies.toList(),
@@ -123,7 +120,7 @@ tasks.clean {
 }
 
 tasks.compileTestKotlin {
-    dependsOn(generateJaxbSimple)
+    dependsOn(generateJaxb)
 }
 
 tasks.test {
