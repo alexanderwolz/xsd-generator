@@ -2,17 +2,16 @@ package de.alexanderwolz.xsd.generator.instance
 
 import com.sun.tools.xjc.Driver
 import de.alexanderwolz.commons.log.Logger
+import de.alexanderwolz.commons.util.xsd.XsdReference
+import de.alexanderwolz.commons.util.xsd.XsdUtils
 import de.alexanderwolz.xsd.generator.Arguments
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.exception.XsdCompileException
-import de.alexanderwolz.xsd.generator.model.XsdReference
-import org.w3c.dom.Element
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.charset.Charset
-import javax.xml.parsers.DocumentBuilderFactory
 
 class XjcJavaGenerator(
     val outputDir: File,
@@ -23,8 +22,8 @@ class XjcJavaGenerator(
     constructor(
         outputDir: File,
         encoding: Charset = Charsets.UTF_8,
-        slf4j: org.slf4j.Logger? = null
-    ) : this(outputDir, encoding, slf4j?.let { Logger(it) } ?: Logger(XjcJavaGenerator::class))
+        logger: org.slf4j.Logger? = null
+    ) : this(outputDir, encoding, logger?.let { Logger(it) } ?: Logger(XjcJavaGenerator::class))
 
 
     override fun generateAutoResolve(
@@ -38,52 +37,30 @@ class XjcJavaGenerator(
         packageName: String?
     ): Boolean {
         val schemaFile = File(schemaFolder, schema)
-        val references = parseXsdReferences(schemaFile)
-        //TODO recursively
-        return false
+        val allReferences = resolve(schemaFile, schemaFolder)
+        return true
     }
 
-    fun parseXsdReferences(xsdFile: File): List<XsdReference> {
-        val references = ArrayList<XsdReference>()
+    private fun resolve(schema: File, schemaFolder: File?): Set<XsdFileReference> {
+        val resolved = mutableSetOf<XsdFileReference>()
+        val visited = mutableSetOf<XsdReference>()
 
-        val factory = DocumentBuilderFactory.newInstance().apply {
-            isNamespaceAware = true
-        }
-        val root = factory.newDocumentBuilder().parse(xsdFile).documentElement
-
-        val xsdNamespace = "http://www.w3.org/2001/XMLSchema"
-
-        root.getElementsByTagNameNS(xsdNamespace, "include").let { includes ->
-            for (i in 0 until includes.length) {
-                val element = includes.item(i) as Element
-                element.getAttribute("schemaLocation").takeIf { it.isNotEmpty() }?.let {
-                    references.add(XsdReference("include", it, null))
+        fun resolve(reference: XsdReference) {
+            if (reference in visited) return
+            visited.add(reference)
+            val file = File(schemaFolder, reference.schemaLocation)
+            resolved.add(XsdFileReference(reference, file))
+            if (file.exists()) {
+                XsdUtils.getXsdReferences(file).forEach { reference ->
+                    resolve(reference)
                 }
             }
         }
-
-        root.getElementsByTagNameNS(xsdNamespace, "import").let { imports ->
-            for (i in 0 until imports.length) {
-                val element = imports.item(i) as Element
-                val schemaLocation = element.getAttribute("schemaLocation")
-                val namespace = element.getAttribute("namespace")
-                if (schemaLocation.isNotEmpty()) {
-                    references.add(XsdReference("import", schemaLocation, namespace))
-                }
-            }
-        }
-
-        root.getElementsByTagNameNS(xsdNamespace, "redefine").let { redefines ->
-            for (i in 0 until redefines.length) {
-                val element = redefines.item(i) as Element
-                element.getAttribute("schemaLocation")?.takeIf { it.isNotEmpty() }?.let {
-                    references.add(XsdReference("redefine", it, null))
-                }
-            }
-        }
-
-        return references
+        return resolved
     }
+
+    private data class XsdFileReference(val reference: XsdReference, val file: File)
+
 
     override fun generateWithDependencies(
         schema: String,

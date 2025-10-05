@@ -1,7 +1,7 @@
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
-import java.util.Base64
+import java.util.*
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -13,11 +13,12 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.3.0"
+version = "1.4.0"
 
 repositories {
     mavenCentral()
     mavenLocal()
+    maven("https://repo1.maven.org/maven2")
 }
 
 java {
@@ -32,8 +33,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-log:1.3.0")
-    implementation("de.alexanderwolz:commons-util:1.3.1")
+    implementation("de.alexanderwolz:commons-util:1.4.3")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
@@ -71,8 +71,6 @@ val generateJaxb = tasks.register<XsdJavaGeneratorTask>("generateJaxb") {
     packageName = null
 }
 
-
-//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
@@ -89,7 +87,6 @@ val generateJaxbAlternative = tasks.register("generateJaxbAlternative") {
     }
 }
 
-//INFO: set org.gradle.logging.level=info (e.g. gradle.properties) for log output
 val generateJaxbSimple = tasks.register("generateJaxbSimple") {
     group = "generation"
     description = "Generates Java classes from XSD schemas"
@@ -108,28 +105,12 @@ private fun generate(schema: String, vararg dependencies: String) {
     )
 }
 
-tasks.clean {
-    doFirst {
-        delete(
-            "buildSrc/build",
-            "buildSrc/.gradle",
-            "build/generated",
-            ".gradle"
-        )
-    }
-}
-
 tasks.compileTestKotlin {
-    dependsOn(generateJaxb)
+    dependsOn(generateJaxbSimple)
 }
 
 tasks.test {
     useJUnitPlatform()
-
-    testLogging {
-        showStandardStreams = true
-        events("passed", "skipped", "failed", "standardOut", "standardError")
-    }
 
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",

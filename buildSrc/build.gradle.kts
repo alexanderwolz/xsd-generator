@@ -5,16 +5,24 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
+    maven("https://repo1.maven.org/maven2")
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-log:1.3.0")
-    implementation("de.alexanderwolz:commons-util:1.3.1")
+    implementation("de.alexanderwolz:commons-util:1.4.3")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     runtimeOnly("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     runtimeOnly("org.jvnet.jaxb:jaxb-plugins:4.0.11") //equals, toString, hashcode
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDir("../src/main/kotlin")
+        }
+    }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
