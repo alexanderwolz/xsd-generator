@@ -21,10 +21,13 @@ abstract class AbstractJavaGeneratorTest {
     protected val rootDir = File("").absoluteFile
     protected val schemaDir = File(rootDir, "schemas")
     protected val bindingsDir = File(schemaDir, "bindings")
-    protected val outputDir = File(rootDir, "build/generated/sources/xjc/test/java")
+
     protected lateinit var generator: XsdJavaGenerator
 
     protected val defaultPackage = "generated"
+
+    @TempDir
+    protected lateinit var outputDir: File
 
     @BeforeEach
     fun before() {

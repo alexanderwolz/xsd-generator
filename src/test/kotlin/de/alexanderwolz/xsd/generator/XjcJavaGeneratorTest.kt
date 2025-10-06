@@ -345,42 +345,6 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
     }
 
     @Test
-    fun testGenerateWithDependencies() {
-        val schemas = listOf(File(schemaDir, "complexParent_v6.xsd"))
-        val bindings = schemas.map { File(bindingsDir, "${it.nameWithoutExtension}.xjb.xml") }.filter { it.exists() }
-        val dependencySchema = File(schemaDir, "articleListCollection_v3.xsd")
-        val dependencyBinding = File(bindingsDir, "${dependencySchema.nameWithoutExtension}.xjb.xml")
-        val dependencies = mapOf(dependencySchema to listOf(dependencyBinding))
-        val catalog = null
-        val createEpisode = false
-        val flags = null
-        val packageName = null
-        generator.generateWithDependencies(schemas, bindings, dependencies, catalog, createEpisode, flags, packageName)
-    }
-
-
-    @Test
-    fun testGenerateStringReferences() {
-        generator.generateWithDependencies(
-            "complexParent_v6.xsd",
-            listOf("articleListCollection_v3.xsd"),
-            schemaDir,
-            bindingsDir
-        )
-        testIfExists(
-            outputDir, listOf(
-                "de/alexanderwolz/model/complex/v6/Complex.java",
-                "de/alexanderwolz/model/article/v3/Article.java",
-                "de/alexanderwolz/model/article/v3/ArticleList.java",
-                "de/alexanderwolz/model/article/v3/Category.java",
-                "de/alexanderwolz/model/article/v3/Status.java",
-                "de/alexanderwolz/model/author/v2/Author.java",
-                "de/alexanderwolz/model/role/v6/Role.java"
-            )
-        )
-    }
-
-    @Test
     fun testAutoResolveWithVersionFromFilename() {
 
         logEvents.clear()

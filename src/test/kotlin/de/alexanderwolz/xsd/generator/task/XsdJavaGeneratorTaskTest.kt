@@ -21,10 +21,9 @@ class XsdJavaGeneratorTaskTest : AbstractJavaGeneratorTest() {
         task.outputDir = outputDir
         task.encoding = Charsets.UTF_8.name()
         task.schemas = listOf(schema)
-        task.bindings = emptyList()
-        task.episodes = emptyList()
         task.catalog = null
-        task.createEpisode = false
+        task.useFilenameVersions = false
+        task.bindingExtension = null
         task.flags = Flags.entries
         task.packageName = null
 

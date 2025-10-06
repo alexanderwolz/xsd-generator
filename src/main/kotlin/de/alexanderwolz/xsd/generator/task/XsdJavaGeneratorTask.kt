@@ -19,23 +19,22 @@ open class XsdJavaGeneratorTask : DefaultTask() {
     lateinit var outputDir: File
 
     @get:Input
+    @Optional
     var encoding: String = Charsets.UTF_8.name()
 
     @get:InputFiles
     lateinit var schemas: Collection<File>
 
-    @get:InputFiles
-    var bindings: Collection<File> = emptyList()
+    @get:Input
+    @Optional
+    var bindingExtension: String? = null
 
-    @get:InputFiles
-    var episodes: Collection<File> = emptyList()
+    @get:Input
+    var useFilenameVersions: Boolean = false
 
     @get:InputFile
     @Optional
     var catalog: File? = null
-
-    @get:Input
-    var createEpisode: Boolean = false
 
     @get:Input
     @Optional
@@ -52,6 +51,17 @@ open class XsdJavaGeneratorTask : DefaultTask() {
             logger.lifecycle(it.message)
         }
         val generator = XjcJavaGenerator(outputDir, encoding, customLogger)
-        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
+        schemas.forEach { schema ->
+            logger.lifecycle("Generating $schema ..")
+            generator.generateAutoResolve(
+                schema,
+                schema.parentFile,
+                bindingExtension,
+                useFilenameVersions,
+                catalog,
+                flags,
+                packageName
+            )
+        }
     }
 }

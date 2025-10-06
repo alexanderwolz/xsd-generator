@@ -55,6 +55,15 @@ generator.generateAutoResolve(
     flags = Flags.values().toList()
 )
 ```
+Use as Gradle Task
+```kotlin
+tasks.register<XsdJavaGeneratorTask>("generateModel") {
+    outputDir = xjcGenDir
+    schemas = fileTree(schemaFolder) { include("article_v3.xsd", "complexParent_v6.xsd") }.files
+    useFilenameVersions = true
+    flags = Flags.values().toList()
+}
+```
 
 - - -
 

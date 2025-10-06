@@ -25,212 +25,53 @@ class XjcJavaGenerator(
         schema: String,
         schemaFolder: File?,
         bindingFolder: File?,
-        bindingExtension: String,
+        bindingExtension: String?,
         useFilenameVersions: Boolean,
         catalog: File?,
-        flags: List<Flags>?,
+        flags: Collection<Flags>?,
+        packageName: String?
+    ): Boolean {
+        val schemaFile = File(schemaFolder, schema)
+        return generateAutoResolve(
+            schemaFile,
+            bindingFolder ?: schemaFolder,
+            bindingExtension,
+            useFilenameVersions,
+            catalog,
+            flags,
+            packageName
+        )
+    }
+
+    override fun generateAutoResolve(
+        schemaFile: File,
+        bindingFolder: File?,
+        bindingExtension: String?,
+        useFilenameVersions: Boolean,
+        catalog: File?,
+        flags: Collection<Flags>?,
         packageName: String?
     ): Boolean {
 
-        val schemaFile = File(schemaFolder, schema)
-        val allReferences = XsdUtils.getAllReferencedXsdSchemaFiles(schemaFile, schemaFolder)
+        val folder = bindingFolder ?: schemaFile.parentFile
+        val extension = bindingExtension?.let { it.takeIf { it.startsWith(".") } ?: ".${it}" } ?: ".xjb.xml"
 
         logger.info { "Generating schema ${schemaFile.name} with auto resolve .." }
-        logger.trace { "Schema folder: $schemaFolder" }
-        logger.trace { "Binding folder: $bindingFolder" }
-        logger.trace { "Output folder: $outputDir" }
-        logger.trace { "Filename Versions: $useFilenameVersions" }
-        logger.trace { "Catalog: $catalog" }
-        logger.trace { "flags: ${flags?.joinToString()}" }
-        logger.trace { "packageName: $packageName" }
+        logger.debug { "Schema folder: ${schemaFile.parent}" }
+        logger.debug { "Binding folder: $folder" }
+        logger.debug { "Output folder: $outputDir" }
+        logger.debug { "Catalog: $catalog" }
+        logger.debug { "Flags: ${flags?.joinToString()}" }
+        logger.debug { "PackageName: ${"Overwritten by filename version".takeIf { useFilenameVersions } ?: (packageName ?: "From schema")}" }
 
-        val parent = allReferences.find { it.file == schemaFile }
-        if (parent == null) {
-            //should never happen
-            throw NoSuchElementException("Could not find root element ($schemaFile)")
+        val parent = XsdUtils.getAllReferencedXsdSchemaFiles(schemaFile).find { it.file == schemaFile }
+        if (parent == null || parent.type != XsdReference.Type.ROOT) {
+            throw NoSuchElementException("Could not find root element ($schemaFile)")  //should never happen
         }
 
         logTree(parent, logger)
-
-        val bindingExt = bindingExtension.takeIf { it.startsWith(".") } ?: ".$bindingExtension"
-        buildRecursive(parent, bindingFolder, bindingExt, packageName, useFilenameVersions, catalog, flags)
+        buildRecursive(parent, folder, extension, packageName, useFilenameVersions, catalog, flags)
         return true
-    }
-
-    fun logTree(parent: XsdFileReference, logger: Logger) {
-        logger.debug { "Found references:" }
-        RecursionUtils.traverseTopDown(parent) { reference ->
-            val depth = RecursionUtils.getDepth(reference)
-            val indent = "  ".repeat(depth)
-            logger.debug { "$indent${reference.schemaLocation} -> ${reference.file.parent}/${reference.file.name}" }
-        }
-    }
-
-    fun buildRecursive(
-        parent: XsdFileReference,
-        bindingFolder: File?,
-        bindingExtension: String,
-        packageName: String?,
-        useFilenameVersions: Boolean,
-        catalog: File?,
-        flags: Collection<Flags>?
-    ) {
-        logger.debug { "Building ${parent.schemaLocation}" }
-        RecursionUtils.traverseBottomUp(parent) { reference ->
-            if (reference.type == XsdReference.Type.INCLUDE) {
-                logger.warn { "Ignoring ${reference.schemaLocation}, because it is included by ${reference.parent?.schemaLocation}" }
-            } else {
-                build(
-                    reference,
-                    bindingFolder,
-                    bindingExtension,
-                    packageName,
-                    useFilenameVersions,
-                    catalog,
-                    flags
-                )
-            }
-        }
-    }
-
-    private fun build(
-        reference: XsdFileReference,
-        bindingFolder: File?,
-        bindingExtension: String,
-        packageName: String?,
-        useFilenameVersions: Boolean,
-        catalog: File?,
-        flags: Collection<Flags>?
-    ) {
-        logger.trace { "Building schema file ${reference.file.name} .." }
-
-        var pkg = packageName
-        if (useFilenameVersions) {
-            val version = VersionUtils.getVersion(reference.file)
-            XsdUtils.getTargetNamespace(reference.file.readText())?.let { namespace ->
-                pkg = "${XsdUtils.getPackageName(namespace)}.${version.asString("_", "v")}"
-            }
-        }
-
-        val episodes = getAllEpisodes(reference)
-        val schemas = listOf(reference.file)
-        val bindings = ArrayList<File>()
-
-        val episode = File(outputDir, "${reference.file.nameWithoutExtension}.episode")
-        if (episode.exists()) {
-            //episodes.add(episode)
-            logger.info { "Episode ${episode.name} exists, so we skip building this model (${reference.schemaLocation})" }
-            return
-        } else {
-            val binding = getBinding(reference, bindingFolder, bindingExtension)
-            if (binding.exists()) {
-                bindings.add(binding)
-            }
-        }
-
-        logger.trace { "Schemas: ${schemas.joinToString { it.name }}" }
-        logger.trace { "Episodes: ${episodes.joinToString { it.name }}" }
-        logger.trace { "Bindings: ${bindings.joinToString { it.name }}" }
-
-        generate(schemas, emptyList(), episodes, catalog, true, flags, pkg)
-
-    }
-
-    private fun getAllEpisodes(reference: XsdFileReference): List<File> {
-        val episodes = mutableSetOf<File>()
-        collectEpisodesRecursive(reference, episodes, true)
-        return episodes.toList()
-    }
-
-    private fun collectEpisodesRecursive(
-        reference: XsdFileReference,
-        episodes: MutableSet<File>,
-        includeTransitive: Boolean = false
-    ) {
-        reference.children.forEach { child ->
-            val isIncluded = child.type == XsdReference.Type.INCLUDE
-
-            if (!isIncluded) {
-                val episode = getEpisode(child)
-                if (episode.exists() && isEpisodeValid(episode)) {
-                    episodes.add(episode)
-                }
-            }
-
-            if (isIncluded || includeTransitive) {
-                collectEpisodesRecursive(child, episodes, includeTransitive = true)
-            } else {
-                collectEpisodesRecursive(child, episodes, includeTransitive = false)
-            }
-        }
-    }
-
-    private fun isEpisodeValid(episode: File): Boolean {
-        if (episode.length() == 0L) return false
-        val content = episode.readText()
-        //it is not empty if it has at least two bindings elements
-        return content.contains("<bindings")
-                && content.indexOf("<bindings") != content.lastIndexOf("<bindings")
-    }
-
-    private fun getEpisode(reference: XsdFileReference): File {
-        return File(outputDir, "${reference.file.nameWithoutExtension}.episode")
-    }
-
-    private fun getBinding(reference: XsdFileReference, bindingFolder: File?, bindingExtension: String): File {
-        return File(bindingFolder, "${reference.file.nameWithoutExtension}$bindingExtension")
-    }
-
-    override fun generateWithDependencies(
-        schema: String,
-        dependencies: Collection<String>,
-        schemaFolder: File?,
-        bindingFolder: File?,
-        bindingExtension: String,
-        catalog: File?,
-        createEpisode: Boolean,
-        flags: List<Flags>?,
-        packageName: String?
-    ): Boolean {
-        val schemas = listOf(File(schemaFolder, schema))
-        val bindingExt = bindingExtension.takeIf { it.startsWith(".") } ?: ".$bindingExtension"
-        val bindings =
-            schemas.map { File(bindingFolder, "${it.nameWithoutExtension}$bindingExt") }.filter { it.exists() }
-        val dependencyMap = HashMap<File, Collection<File>>()
-        dependencies.forEach { dependency ->
-            val depSchema = File(schemaFolder, dependency)
-            val depBindings =
-                listOf(File(bindingFolder, "${depSchema.nameWithoutExtension}$bindingExt")).filter { it.exists() }
-            dependencyMap[depSchema] = depBindings
-        }
-        return generateWithDependencies(schemas, bindings, dependencyMap, catalog, createEpisode, flags, packageName)
-    }
-
-
-    override fun generateWithDependencies(
-        schemas: List<File>,
-        bindings: List<File>,
-        dependencies: Map<File, Collection<File>>,
-        catalog: File?,
-        createEpisode: Boolean,
-        flags: List<Flags>?,
-        packageName: String?
-    ): Boolean {
-        logger.info { "Generating schemas (${schemas.joinToString { it.name }}) with dependencies (${dependencies.keys.joinToString { it.name }})" }
-
-        val episodes = ArrayList<File>()
-        dependencies.forEach { entry ->
-            val dependency = entry.key
-            val dependencyBindings = entry.value
-            val episode = File(outputDir, "${dependency.nameWithoutExtension}.episode")
-            if (!episode.exists()) {
-                logger.info { "Episode for dependency ${dependency.name} does not exist, starting generation.." }
-                generate(listOf(dependency), dependencyBindings, emptyList(), catalog, true, flags, packageName)
-            }
-            episodes.add(episode)
-        }
-
-        return generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
     }
 
     override fun generate(
@@ -351,4 +192,124 @@ class XjcJavaGenerator(
         }
         return errors
     }
+
+    private fun logTree(parent: XsdFileReference, logger: Logger) {
+        logger.debug { "Found references:" }
+        RecursionUtils.traverseTopDown(parent) { reference ->
+            val depth = RecursionUtils.getDepth(reference)
+            val indent = "  ".repeat(depth)
+            logger.debug { "$indent${reference.schemaLocation} -> ${reference.file.parent}/${reference.file.name}" }
+        }
+    }
+
+    private fun buildRecursive(
+        parent: XsdFileReference,
+        bindingFolder: File?,
+        bindingExtension: String,
+        packageName: String?,
+        useFilenameVersions: Boolean,
+        catalog: File?,
+        flags: Collection<Flags>?
+    ) {
+        logger.debug { "Building ${parent.schemaLocation}" }
+        RecursionUtils.traverseBottomUp(parent) { reference ->
+            if (reference.type == XsdReference.Type.INCLUDE) {
+                logger.warn { "Ignoring ${reference.schemaLocation}, because it is included by ${reference.parent?.schemaLocation}" }
+            } else {
+                build(
+                    reference,
+                    bindingFolder,
+                    bindingExtension,
+                    packageName,
+                    useFilenameVersions,
+                    catalog,
+                    flags
+                )
+            }
+        }
+    }
+
+    private fun build(
+        reference: XsdFileReference,
+        bindingFolder: File?,
+        bindingExtension: String,
+        packageName: String?,
+        useFilenameVersions: Boolean,
+        catalog: File?,
+        flags: Collection<Flags>?
+    ): Boolean {
+        logger.trace { "Building schema file ${reference.file.name} .." }
+
+        var pkg = packageName
+        if (useFilenameVersions) {
+            val version = VersionUtils.getVersion(reference.file)
+            XsdUtils.getTargetNamespace(reference.file.readText())?.let { namespace ->
+                pkg = "${XsdUtils.getPackageName(namespace)}.${version.asString("_", "v")}"
+            }
+        }
+
+        val episodes = getAllEpisodes(reference)
+        val schemas = listOf(reference.file)
+        val bindings = ArrayList<File>()
+
+        val episode = File(outputDir, "${reference.file.nameWithoutExtension}.episode")
+        if (episode.exists()) {
+            logger.info { "Episode ${episode.name} exists, so we skip building this model (${reference.schemaLocation})" }
+            return true
+        } else {
+            val binding = getBinding(reference, bindingFolder, bindingExtension)
+            if (binding.exists()) {
+                bindings.add(binding)
+            }
+        }
+
+        logger.trace { "Schemas: ${schemas.joinToString { it.name }}" }
+        logger.trace { "Episodes: ${episodes.joinToString { it.name }}" }
+        logger.trace { "Bindings: ${bindings.joinToString { it.name }}" }
+
+        return generate(schemas, emptyList(), episodes, catalog, true, flags, pkg)
+    }
+
+    private fun getAllEpisodes(reference: XsdFileReference): List<File> {
+        val episodes = mutableSetOf<File>()
+        collectEpisodesRecursive(reference, episodes, true)
+        return episodes.toList()
+    }
+
+    private fun collectEpisodesRecursive(
+        reference: XsdFileReference,
+        episodes: MutableSet<File>,
+        includeTransitive: Boolean = false
+    ) {
+        reference.children.forEach { child ->
+            if (child.type != XsdReference.Type.INCLUDE) {
+                val episode = getEpisode(child)
+                if (episode.exists() && isEpisodeValid(episode)) {
+                    episodes.add(episode)
+                }
+            }
+            if (child.type == XsdReference.Type.INCLUDE || includeTransitive) {
+                collectEpisodesRecursive(child, episodes, includeTransitive = true)
+            } else {
+                collectEpisodesRecursive(child, episodes, includeTransitive = false)
+            }
+        }
+    }
+
+    private fun isEpisodeValid(episode: File): Boolean {
+        if (episode.length() == 0L) return false
+        //it is not empty if it has at least two bindings elements
+        val content = episode.readText()
+        return content.contains("<bindings")
+                && content.indexOf("<bindings") != content.lastIndexOf("<bindings")
+    }
+
+    private fun getEpisode(reference: XsdFileReference): File {
+        return File(outputDir, "${reference.file.nameWithoutExtension}.episode")
+    }
+
+    private fun getBinding(reference: XsdFileReference, bindingFolder: File?, bindingExtension: String): File {
+        return File(bindingFolder, "${reference.file.nameWithoutExtension}$bindingExtension")
+    }
+
 }
