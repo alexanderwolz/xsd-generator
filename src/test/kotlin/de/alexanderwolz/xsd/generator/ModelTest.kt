@@ -16,8 +16,6 @@ import kotlin.test.assertEquals
 
 class ModelTest() {
 
-    private val logger = Logger(javaClass)
-
     @Test
     fun testModelCreationFromXml() {
         val article2 = createArticleFromXmlString(articleXml)

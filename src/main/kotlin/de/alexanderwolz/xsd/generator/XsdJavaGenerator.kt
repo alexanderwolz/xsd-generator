@@ -1,7 +1,7 @@
 package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.commons.log.Logger
-import de.alexanderwolz.xsd.generator.XjcJavaGenerator
+import org.slf4j.Logger as LoggerSLF4J
 import java.io.File
 import java.nio.charset.Charset
 
@@ -9,11 +9,7 @@ interface XsdJavaGenerator {
 
     companion object {
 
-        fun create(
-            outputDir: File,
-            encoding: Charset = Charsets.UTF_8,
-            logger: org.slf4j.Logger? = null
-        ): XsdJavaGenerator {
+        fun create(outputDir: File, encoding: Charset = Charsets.UTF_8, logger: LoggerSLF4J? = null): XsdJavaGenerator {
             return XjcJavaGenerator(outputDir, encoding, logger)
         }
 
@@ -23,36 +19,23 @@ interface XsdJavaGenerator {
     }
 
     fun generateAutoResolve(
-        schema: String,
-        schemaFolder: File?,
-        bindingFolder: File? = schemaFolder,
-        bindingExtension: String = ".xjb.xml",
+        schemaFile: File,
+        bindingFolder: File? = null,
+        bindingExtension: String? = null,
         useFilenameVersions: Boolean = false,
         catalog: File? = null,
-        flags: List<Flags>? = null,
+        flags: Collection<Flags>? = null,
         packageName: String? = null
     ): Boolean
 
-    fun generateWithDependencies(
+    fun generateAutoResolve(
         schema: String,
-        dependencies: Collection<String> = emptyList(),
         schemaFolder: File? = null,
-        bindingFolder: File? = schemaFolder,
-        bindingExtension: String = ".xjb.xml",
+        bindingFolder: File? = null,
+        bindingExtension: String? = null,
+        useFilenameVersions: Boolean = false,
         catalog: File? = null,
-        createEpisode: Boolean = false,
-        flags: List<Flags>? = null,
-        packageName: String? = null
-    ): Boolean
-
-
-    fun generateWithDependencies(
-        schemas: List<File>,
-        bindings: List<File>,
-        dependencies: Map<File, Collection<File>>,
-        catalog: File? = null,
-        createEpisode: Boolean = false,
-        flags: List<Flags>? = null,
+        flags: Collection<Flags>? = null,
         packageName: String? = null
     ): Boolean
 

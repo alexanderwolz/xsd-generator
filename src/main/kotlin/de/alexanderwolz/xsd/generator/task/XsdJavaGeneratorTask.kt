@@ -3,6 +3,7 @@ package de.alexanderwolz.xsd.generator.task
 import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XjcJavaGenerator
+import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -19,23 +20,22 @@ open class XsdJavaGeneratorTask : DefaultTask() {
     lateinit var outputDir: File
 
     @get:Input
+    @Optional
     var encoding: String = Charsets.UTF_8.name()
 
     @get:InputFiles
     lateinit var schemas: Collection<File>
 
-    @get:InputFiles
-    var bindings: Collection<File> = emptyList()
+    @get:Input
+    @Optional
+    var bindingExtension: String? = null
 
-    @get:InputFiles
-    var episodes: Collection<File> = emptyList()
+    @get:Input
+    var useFilenameVersions: Boolean = false
 
     @get:InputFile
     @Optional
     var catalog: File? = null
-
-    @get:Input
-    var createEpisode: Boolean = false
 
     @get:Input
     @Optional
@@ -51,7 +51,18 @@ open class XsdJavaGeneratorTask : DefaultTask() {
         val customLogger = Logger(javaClass) {
             logger.lifecycle(it.message)
         }
-        val generator = XjcJavaGenerator(outputDir, encoding, customLogger)
-        generator.generate(schemas, bindings, episodes, catalog, createEpisode, flags, packageName)
+        val generator = XsdJavaGenerator.create(outputDir, encoding, customLogger)
+        schemas.forEach { schema ->
+            logger.lifecycle("Generating $schema ..")
+            generator.generateAutoResolve(
+                schema,
+                schema.parentFile,
+                bindingExtension,
+                useFilenameVersions,
+                catalog,
+                flags,
+                packageName
+            )
+        }
     }
 }
