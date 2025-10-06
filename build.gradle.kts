@@ -1,8 +1,6 @@
 import de.alexanderwolz.xsd.generator.Flags
-import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import de.alexanderwolz.xsd.generator.task.XsdJavaGeneratorTask
 import java.util.*
-import kotlin.collections.toList
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -14,7 +12,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.5.1"
+version = "1.5.2"
 
 repositories {
     mavenCentral()
@@ -57,7 +55,7 @@ sourceSets {
     }
 }
 
-tasks.register<XsdJavaGeneratorTask>("generateModel") {
+tasks.register<XsdJavaGeneratorTask>("buildModel") {
     val schemaFolder = layout.projectDirectory.dir("schemas").asFile
     outputDir = xjcGenDir
     schemas = fileTree(schemaFolder) { include("article_v3.xsd", "complexParent_v6.xsd") }.files
@@ -66,7 +64,7 @@ tasks.register<XsdJavaGeneratorTask>("generateModel") {
 }
 
 tasks.compileTestKotlin {
-    dependsOn("generateModel")
+    dependsOn("buildModel")
 }
 
 tasks.test {

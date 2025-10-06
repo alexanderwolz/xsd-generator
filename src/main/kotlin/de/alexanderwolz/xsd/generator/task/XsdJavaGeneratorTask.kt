@@ -3,6 +3,7 @@ package de.alexanderwolz.xsd.generator.task
 import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.xsd.generator.Flags
 import de.alexanderwolz.xsd.generator.XjcJavaGenerator
+import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -50,7 +51,7 @@ open class XsdJavaGeneratorTask : DefaultTask() {
         val customLogger = Logger(javaClass) {
             logger.lifecycle(it.message)
         }
-        val generator = XjcJavaGenerator(outputDir, encoding, customLogger)
+        val generator = XsdJavaGenerator.create(outputDir, encoding, customLogger)
         schemas.forEach { schema ->
             logger.lifecycle("Generating $schema ..")
             generator.generateAutoResolve(

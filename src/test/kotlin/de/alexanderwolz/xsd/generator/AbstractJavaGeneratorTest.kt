@@ -2,12 +2,10 @@ package de.alexanderwolz.xsd.generator
 
 import de.alexanderwolz.commons.log.Event
 import de.alexanderwolz.commons.log.Logger
-import de.alexanderwolz.xsd.generator.XjcJavaGenerator
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
-import kotlin.test.assertIs
 
 abstract class AbstractJavaGeneratorTest {
 
