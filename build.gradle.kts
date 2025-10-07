@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.5.2"
+version = "1.5.3"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-util:1.4.6")
+    implementation("de.alexanderwolz:commons-util:1.4.7")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())
@@ -69,12 +69,25 @@ tasks.compileTestKotlin {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED",
         "--add-opens=java.base/java.util=ALL-UNNAMED"
     )
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
 
 tasks.jar {
@@ -90,22 +103,6 @@ tasks.jar {
     }
 }
 
-jacoco {
-    toolVersion = "0.8.11"
-}
-
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-}
-
 //see also https://github.com/gradle-nexus/publish-plugin/tree/v2.0.0
 publishing {
     publications {
@@ -117,8 +114,8 @@ publishing {
                 url.set("https://github.com/alexanderwolz/http-client")
                 licenses {
                     license {
-                        name.set("AGPL-3.0")
-                        url.set("https://www.gnu.org/licenses/agpl-3.0.html")
+                        name.set("Apache License 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
                     }
                 }
                 developers {
