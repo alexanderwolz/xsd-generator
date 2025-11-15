@@ -2,15 +2,9 @@ package de.alexanderwolz.xsd.generator.task
 
 import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.xsd.generator.Flags
-import de.alexanderwolz.xsd.generator.XjcJavaGenerator
 import de.alexanderwolz.xsd.generator.XsdJavaGenerator
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import java.io.File
 import java.nio.charset.Charset
 

@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "de.alexanderwolz"
-version = "1.5.3"
+version = "1.5.4"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("de.alexanderwolz:commons-util:1.4.7")
+    implementation("de.alexanderwolz:commons-util:1.4.10")
     implementation("org.glassfish.jaxb:jaxb-xjc:4.0.6")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.6")
     compileOnly(gradleApi())

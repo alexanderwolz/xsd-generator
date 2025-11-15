@@ -74,7 +74,8 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         testIfExists(outputDir, listOf("order_v1.episode"))
         Assertions.assertTrue {
             val episode = File(outputDir, "order_v1.episode").readText()
-            episode.contains("<jaxb:package name=\"com.test.xjc.generated\"/>") && episode.contains("<jaxb:class ref=\"com.test.xjc.generated.Order\"/>")
+            episode.contains("<jaxb:package name=\"com.test.xjc.generated\"/>") &&
+                    episode.contains("<jaxb:class ref=\"com.test.xjc.generated.Order\"/>")
         }
     }
 
@@ -105,7 +106,8 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         testIfExists(outputDir, listOf("order_v1.episode"))
         Assertions.assertTrue {
             val episode = File(outputDir, "order_v1.episode").readText()
-            episode.contains("<jaxb:package name=\"de.alexanderwolz.generated.v1\"/>") && episode.contains("<jaxb:class ref=\"de.alexanderwolz.generated.v1.Order\"/>")
+            episode.contains("<jaxb:package name=\"de.alexanderwolz.generated.v1\"/>") &&
+                    episode.contains("<jaxb:class ref=\"de.alexanderwolz.generated.v1.Order\"/>")
         }
     }
 
@@ -180,14 +182,14 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         testIfExists(outputDir, listOf("articleListCollection_v3.episode"))
         Assertions.assertTrue {
             val episode = File(outputDir, "articleListCollection_v3.episode").readText()
-            episode.contains("<package name=\"de.alexanderwolz.model.article.v3\"/>")
-                    && episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.ArticleListCollection\"/>")
-                    && episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.ArticleList\"/>")
-                    && episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.Article\"/>")
-                    && episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.article.v3.Status\"/>")
-                    && episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.article.v3.Category\"/>")
-                    && episode.contains("<class ref=\"de.alexanderwolz.model.author.v2.Author\"/>")
-                    && episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.role.v6.Role\"/>")
+            episode.contains("<package name=\"de.alexanderwolz.model.article.v3\"/>") &&
+                    episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.ArticleListCollection\"/>") &&
+                    episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.ArticleList\"/>") &&
+                    episode.contains("<class ref=\"de.alexanderwolz.model.article.v3.Article\"/>") &&
+                    episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.article.v3.Status\"/>") &&
+                    episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.article.v3.Category\"/>") &&
+                    episode.contains("<class ref=\"de.alexanderwolz.model.author.v2.Author\"/>") &&
+                    episode.contains("<typesafeEnumClass ref=\"de.alexanderwolz.model.role.v6.Role\"/>")
         }
     }
 
@@ -320,10 +322,12 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         val createEpisode = false
         val flags = null
         val packageName = null
-        assertThrows<NoSuchElementException> {
+        val ex = assertThrows<NoSuchElementException> {
             //It must fail here, as the episode does not exist
             generator.generate(listOf(schema), bindings, episodes, catalog, createEpisode, flags, packageName)
         }
+        // Best practice: sicherstellen, dass die Fehlermeldung hilfreich ist
+        assertEquals(true, ex.message?.contains("articleListCollection_v3.episode"))
     }
 
     @Test
@@ -371,7 +375,7 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         logEvents.clear()
         generator.generateAutoResolve("article_v3.xsd", schemaDir, useFilenameVersions = true).apply {
             //only generates model: Status, Author, Role, Article -> should only generate Article and Role
-            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted().onEach { println(it) }
+            val logs = logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.sorted()
             assertEquals(8, logs.size)
             assertEquals("de/alexanderwolz/model/articles/v3/Article.java", logs[0])
             assertEquals("de/alexanderwolz/model/articles/v3/ArticleList.java", logs[1])
@@ -388,7 +392,7 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         generator.generateAutoResolve("complexParent_v6.xsd", schemaDir, useFilenameVersions = true).apply {
             //only generates complex article
             val logs =
-                logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }.onEach { println(it) }
+                logEvents.map { it.message }.filter { it.startsWith("de/alexanderwolz") }
             assertEquals(3, logs.size)
             assertEquals("de/alexanderwolz/model/complex/v6/Complex.java", logs[0])
             assertEquals("de/alexanderwolz/model/complex/v6/ObjectFactory.java", logs[1])
@@ -467,4 +471,91 @@ class XjcJavaGeneratorTest : AbstractJavaGeneratorTest() {
         }
     }
 
+    @Test
+    fun testGenerateFailsForEmptySchemaList() {
+        val ex = assertThrows<NoSuchElementException> {
+            generator.generate(
+                schemas = emptyList(),
+                bindings = emptyList(),
+                episodes = emptyList(),
+                catalog = null,
+                createEpisode = false,
+                flags = null,
+                packageName = null
+            )
+        }
+        assertEquals("Schemas must be not be empty", ex.message)
+    }
+
+    @Test
+    fun testGenerateFailsForNonExistingSchema() {
+        val nonExistingSchema = File(schemaDir, "does-not-exist.xsd")
+        val ex = assertThrows<NoSuchElementException> {
+            generator.generate(
+                schemas = listOf(nonExistingSchema),
+                bindings = emptyList(),
+                episodes = emptyList(),
+                catalog = null,
+                createEpisode = false,
+                flags = null,
+                packageName = null
+            )
+        }
+        assertEquals(true, ex.message?.contains(nonExistingSchema.absolutePath))
+    }
+
+    @Test
+    fun testGenerateFailsForNonExistingBinding() {
+        val schema = File(schemaDir, "order_v1.xsd")
+        val nonExistingBinding = File(bindingsDir, "does-not-exist.xjb.xml")
+
+        val ex = assertThrows<NoSuchElementException> {
+            generator.generate(
+                schemas = listOf(schema),
+                bindings = listOf(nonExistingBinding),
+                episodes = emptyList(),
+                catalog = null,
+                createEpisode = false,
+                flags = null,
+                packageName = null
+            )
+        }
+        assertEquals(true, ex.message?.contains("Binding"))
+        assertEquals(true, ex.message?.contains(nonExistingBinding.path))
+    }
+
+    @Test
+    fun testGenerateFailsForNonExistingCatalog() {
+        val schema = File(schemaDir, "order_v1.xsd")
+        val catalog = File(outputDir, "does-not-exist.catalog.xml")
+
+        val ex = assertThrows<NoSuchElementException> {
+            generator.generate(
+                schemas = listOf(schema),
+                bindings = emptyList(),
+                episodes = emptyList(),
+                catalog = catalog,
+                createEpisode = false,
+                flags = null,
+                packageName = null
+            )
+        }
+        assertEquals(true, ex.message?.contains("Catalog"))
+        assertEquals(true, ex.message?.contains(catalog.path))
+    }
+
+    @Test
+    fun testGenerateReturnsTrueOnSuccess() {
+        val schema = File(schemaDir, "order_v1.xsd")
+        val result = generator.generate(
+            schemas = listOf(schema),
+            bindings = emptyList(),
+            episodes = emptyList(),
+            catalog = null,
+            createEpisode = false,
+            flags = null,
+            packageName = null
+        )
+        assertTrue(result)
+    }
 }

@@ -16,7 +16,7 @@ abstract class AbstractJavaGeneratorTest {
         logEvents.add(it)
     }
 
-    protected val rootDir = File("").absoluteFile
+    protected val rootDir: File = File("").absoluteFile
     protected val schemaDir = File(rootDir, "schemas")
     protected val bindingsDir = File(schemaDir, "bindings")
 

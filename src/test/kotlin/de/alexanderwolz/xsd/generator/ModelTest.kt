@@ -1,6 +1,5 @@
 package de.alexanderwolz.xsd.generator
 
-import de.alexanderwolz.commons.log.Logger
 import de.alexanderwolz.model.articles.v3.Article
 import de.alexanderwolz.model.articles.v3.ObjectFactory
 import de.alexanderwolz.model.articles.v3.Status
@@ -25,7 +24,7 @@ class ModelTest() {
     @Test
     fun testXmlCreationFromModel() {
         val generatedArticleXml = createArticleXmlString(article)
-        assertEquals(articleXml.replace("\n",""), generatedArticleXml.replace("\n",""))
+        assertEquals(articleXml.replace("\n", ""), generatedArticleXml.replace("\n", ""))
     }
 
     private fun createArticleFromXmlString(xml: String): Article {

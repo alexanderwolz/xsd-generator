@@ -20,14 +20,14 @@ You can pull the latest binaries from the central Maven repositories:
 
 with Gradle
 ```kotlin
-implementation("de.alexanderwolz:xsd-generator-client:1.5.3")
+implementation("de.alexanderwolz:xsd-generator-client:1.5.4")
 ```
 with Maven
 ```xml
 <dependency>
   <groupId>de.alexanderwolz</groupId>
   <artifactId>xsd-generator</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
 </dependency>
 ```
 
